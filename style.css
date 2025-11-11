@@ -7,15 +7,34 @@ body {
   padding: 0;
 }
 
-header {
-  background-color: #0033A0;
-  color: #FFD100;
-  padding: 2em 0;
+header.hero {
+  position: relative;
+  background: url('https://raw.githubusercontent.com/BrightMine35/KROO/main/IMG_8412.jpeg') center/cover no-repeat;
+  height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+header .overlay {
+  background-color: rgba(0, 51, 160, 0.6);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 h1 {
   margin: 0;
-  font-size: 2.5em;
+  font-size: 2.8em;
+  color: #FFD100;
+}
+
+p {
+  margin: 0.5em 0;
 }
 
 main {
