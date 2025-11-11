@@ -9,7 +9,7 @@ body {
 
 header.hero {
   position: relative;
-  background: url('https://raw.githubusercontent.com/BrightMine35/KROO/main/IMG_8412.jpeg') center/cover no-repeat;
+  background: url('https://raw.githubusercontent.com/BrightMine35/KROO/refs/heads/main/IMG_8412.jpeg?token=GHSAT0AAAAAADO73THUMCSDOQH3NW27GQ3I2ISXACQ') center/cover no-repeat;
   height: 50vh;
   display: flex;
   align-items: center;
@@ -58,4 +58,10 @@ footer {
 .note {
   font-size: 0.9em;
   color: gray;
+}
+header.hero {
+  background-image: url('https://raw.githubusercontent.com/BrightMine35/KROO/refs/heads/main/IMG_8412.jpeg?token=GHSAT0AAAAAADO73THUMCSDOQH3NW27GQ3I2ISXACQ') !important;
+  background-position: center !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
 }
