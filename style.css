@@ -18,7 +18,7 @@ header.hero {
 }
 
 header .overlay {
-  background-color: rgba(0, 51, 160, 0.6);
+  background-color: rgba(0, 51, 160, 0.25);
   width: 100%;
   height: 100%;
   display: flex;
