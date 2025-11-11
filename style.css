@@ -1,3 +1,8 @@
+/* ===========================
+   K-ROO Live Main Stylesheet
+   =========================== */
+
+/* Base setup */
 body {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   background-color: #f5f8fb;
@@ -7,47 +12,66 @@ body {
   padding: 0;
 }
 
+/* Header hero section */
 header.hero {
   position: relative;
-  background: url('https://raw.githubusercontent.com/BrightMine35/KROO/refs/heads/main/IMG_8412.jpeg?token=GHSAT0AAAAAADO73THUMCSDOQH3NW27GQ3I2ISXACQ') center/cover no-repeat;
+  background-image: url('https://raw.githubusercontent.com/BrightMine35/KROO/refs/heads/main/IMG_8412.jpeg?token=GHSAT0AAAAAADO73THUMCSDOQH3NW27GQ3I2ISXACQ');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
   height: 50vh;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
+  overflow: hidden;
 }
 
+/* Blue translucent overlay */
 header .overlay {
-  background-color: rgba(0, 51, 160, 0.25);
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
+  background-color: rgba(0, 51, 160, 0.25);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
+/* Headings */
 h1 {
   margin: 0;
   font-size: 2.8em;
   color: #FFD100;
 }
 
+h2 {
+  color: #0033A0;
+  margin-top: 1em;
+}
+
+/* Paragraphs */
 p {
   margin: 0.5em 0;
 }
 
+/* Main content */
 main {
   margin: 2em auto;
   width: 90%;
   max-width: 700px;
 }
 
+/* Audio player */
 audio {
   margin-top: 1em;
   width: 100%;
 }
 
+/* Footer */
 footer {
   background-color: #0033A0;
   color: white;
@@ -55,13 +79,23 @@ footer {
   margin-top: 3em;
 }
 
+/* Notes */
 .note {
   font-size: 0.9em;
   color: gray;
 }
-header.hero {
-  background-image: url('https://raw.githubusercontent.com/BrightMine35/KROO/refs/heads/main/IMG_8412.jpeg?token=GHSAT0AAAAAADO73THUMCSDOQH3NW27GQ3I2ISXACQ') !important;
-  background-position: center !important;
-  background-size: cover !important;
-  background-repeat: no-repeat !important;
+
+/* Responsive design */
+@media (max-width: 768px) {
+  header.hero {
+    height: 40vh;
+  }
+
+  h1 {
+    font-size: 2em;
+  }
+
+  main {
+    width: 95%;
+  }
 }
