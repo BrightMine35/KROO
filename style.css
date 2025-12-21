@@ -14,13 +14,13 @@ body {
 
 /* Header Section - Forces the image to show */
 header.hero {
+  position: relative; /* REQUIRED for the overlay to stretch correctly */
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   min-height: 500px; 
   background-color: #0033A0; 
-  /* Using the absolute URL to bypass pathing issues */
   background-image: url('https://k-roo.digital/rooradio.jpeg') !important;
   background-size: cover !important;
   background-position: center !important;
