@@ -20,10 +20,12 @@ header.hero {
   width: 100%;
   min-height: 500px; 
   background-color: #0033A0; 
-  background-image: url('rooradio.jpeg') !important;
+  /* Using the absolute URL to bypass pathing issues */
+  background-image: url('https://k-roo.digital/rooradio.jpeg') !important;
   background-size: cover !important;
   background-position: center !important;
   background-repeat: no-repeat !important;
+  color: white;
 }
 
 header .overlay {
