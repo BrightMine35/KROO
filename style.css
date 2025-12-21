@@ -12,26 +12,22 @@ body {
   padding: 0;
 }
 
-/* Header hero section */
+/* Header Section - Forces the image to show */
 header.hero {
-  position: relative;
-  /* This combines a 45% blue tint AND your image into one layer */
-  background: linear-gradient(rgba(0, 51, 160, 0.45), rgba(0, 51, 160, 0.45)), 
-              url('IMG_8412.jpg'); 
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: 50vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  overflow: hidden;
+  width: 100%;
+  min-height: 500px; 
+  background-color: #0033A0; 
+  background-image: url('rooradio.jpeg') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
 }
 
-/* Simplify the overlay - remove its background color since it's now in the header */
 header .overlay {
-  position: relative; /* Changed from absolute */
+  position: relative; 
   z-index: 2;
   display: flex;
   flex-direction: column;
@@ -43,9 +39,9 @@ header .overlay {
 /* Headings */
 h1 {
   margin: 0;
-  font-size: 2.8em;
+  font-size: 3.5em;
   color: #FFD100;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.5); /* Added shadow for pop */
+  text-shadow: 2px 2px 10px rgba(0,0,0,0.7);
 }
 
 h2 {
@@ -53,28 +49,23 @@ h2 {
   margin-top: 1em;
 }
 
-/* Paragraphs */
-p {
-  margin: 0.5em 0;
-}
-
-/* Main content - INCREASED max-width to allow a bigger video */
+/* Main content - Using 1200px for a much larger video */
 main {
-  margin: 2em auto;
-  width: 90%;
-  max-width: 900px; /* Increased from 700px */
+  width: 95% !important;
+  max-width: 1200px !important; 
+  margin: 40px auto !important;
 }
 
-/* Responsive Video Container - UPDATED */
+/* Video Player - 16:9 Aspect Ratio */
 .video-container {
   position: relative;
   overflow: hidden;
-  width: 100%;
-  padding-top: 56.25%; /* Keeps the 16:9 aspect ratio */
+  width: 100% !important;
+  padding-top: 56.25%; 
   margin-bottom: 1.5em;
   background: #000;
-  border-radius: 12px; /* Slightly more rounded for a modern look */
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15); /* Adds depth so it looks "bigger" and more important */
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
 .video-container iframe {
@@ -85,38 +76,34 @@ main {
   height: 100%;
 }
 
-/* Audio player - This will now fill the new 900px width */
+/* Audio Player */
 audio {
   margin-top: 0.5em;
   width: 100%;
-  height: 50px; /* Explicit height to keep it sleek compared to the large video */
+  height: 50px;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   border-radius: 30px;
 }
 
-/* Footer */
+/* Footer & Notes */
 footer {
   background-color: #0033A0;
   color: white;
-  padding: 1em 0;
+  padding: 2em 0;
   margin-top: 3em;
 }
 
-/* Notes */
 .note {
   font-size: 0.9em;
   color: gray;
 }
 
-/* Responsive design */
+/* Mobile Responsive Adjustments */
 @media (max-width: 768px) {
   header.hero {
-    height: 40vh;
+    min-height: 300px;
   }
   h1 {
     font-size: 2em;
-  }
-  main {
-    width: 95%;
   }
 }
