@@ -15,9 +15,9 @@ body {
 /* Header hero section */
 header.hero {
   position: relative;
-  /* UPDATED: Assuming the file is named IMG_8412.jpg and in the same folder. 
-     Change the extension to .png or .HEIC if needed! */
-  background-image: url('IMG_8412.jpeg'); 
+  /* This combines a 45% blue tint AND your image into one layer */
+  background: linear-gradient(rgba(0, 51, 160, 0.45), rgba(0, 51, 160, 0.45)), 
+              url('IMG_8412.jpg'); 
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -29,18 +29,15 @@ header.hero {
   overflow: hidden;
 }
 
-/* Blue translucent overlay */
+/* Simplify the overlay - remove its background color since it's now in the header */
 header .overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 51, 160, 0.45); /* Increased opacity slightly for readability */
+  position: relative; /* Changed from absolute */
+  z-index: 2;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  text-align: center;
 }
 
 /* Headings */
