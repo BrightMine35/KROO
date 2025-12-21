@@ -15,7 +15,9 @@ body {
 /* Header hero section */
 header.hero {
   position: relative;
-  background-image: url('https://imgur.com/a/L0DyWOb');
+  /* UPDATED: Assuming the file is named IMG_8412.jpg and in the same folder. 
+     Change the extension to .png or .HEIC if needed! */
+  background-image: url('IMG_8412.jpeg'); 
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -34,7 +36,7 @@ header .overlay {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 51, 160, 0.25);
+  background-color: rgba(0, 51, 160, 0.45); /* Increased opacity slightly for readability */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -46,6 +48,7 @@ h1 {
   margin: 0;
   font-size: 2.8em;
   color: #FFD100;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5); /* Added shadow for pop */
 }
 
 h2 {
@@ -65,10 +68,33 @@ main {
   max-width: 700px;
 }
 
+/* Responsive Video Container */
+.video-container {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 Aspect Ratio */
+  margin-bottom: 1.5em;
+  background: #000;
+  border-radius: 8px; /* Smooth corners */
+}
+
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+}
+
 /* Audio player */
 audio {
-  margin-top: 1em;
+  margin-top: 0.5em;
   width: 100%;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  border-radius: 30px;
 }
 
 /* Footer */
@@ -90,11 +116,9 @@ footer {
   header.hero {
     height: 40vh;
   }
-
   h1 {
     font-size: 2em;
   }
-
   main {
     width: 95%;
   }
