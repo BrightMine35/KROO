@@ -6,7 +6,7 @@
 body {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   background-color: #f5f8fb;
-  color: #222;
+  color: #222222;
   text-align: center;
   margin: 0;
   padding: 0;
@@ -20,8 +20,8 @@ header.hero {
   justify-content: center;
   width: 100%;
   min-height: 500px; 
-  background-color: #0033A0; 
-  background-image: url('https://k-roo.digital/rooradio.jpeg') !important;
+  background-color: #0066CC; 
+  background-image: url('rooradio.jpg') !important;
   background-size: cover !important;
   background-position: center !important;
   background-repeat: no-repeat !important;
