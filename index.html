@@ -77,7 +77,7 @@
                 // If there's only one source, it might not be an array
                 if (Array.isArray(source)) {
                     const liveMount = source.find(s => s.listenurl && s.listenurl.includes('/live'));
-                    track = liveMount ? liveMount.title : source[0].title;
+                    console.log(data); // This will show you exactly what Icecast is sending in the console
                 } else {
                     track = source.title;
                 }
