@@ -64,32 +64,25 @@
     </footer>
 
     <script>
+       const NPOINT_ID = "YOUR_ID_HERE"; // <--- Put the SAME ID here
+
         function updateMetadata() {
-        fetch('http://10.43.30.79:8000/status-json.xsl?t=' + new Date().getTime())
-        .then(response => response.json())
-        .then(data => {
-            console.log("Icecast Data Received:", data); // THIS SHOWS DATA IN THE CONSOLE
-            
-            let track = "K-ROO Student Radio";
-            
-            if (data.icestats && data.icestats.source) {
-                const sources = Array.isArray(data.icestats.source) ? data.icestats.source : [data.icestats.source];
-                
-                // Look for the source that actually has a title
-                const activeSource = sources.find(s => s.title && s.title !== "");
-                if (activeSource) {
-                    track = activeSource.title;
-                }
-            }
-            document.getElementById('track-info').innerText = track;
-        })
-        .catch(err => {
-            console.error("Connection Error:", err);
-            document.getElementById('track-info').innerText = "Offline or Blocked";
-        });
+            fetch(`https://api.npoint.io/${NPOINT_ID}`)
+            .then(response => response.json())
+            .then(data => {
+                // We just grab the "track" field from our Cloud Chalkboard
+                const track = data.track || "K-ROO Student Radio";
+                document.getElementById('track-info').innerText = track;
+            })
+            .catch(err => {
+                console.error("Bridge Fetch Error:", err);
+                document.getElementById('track-info').innerText = "K-ROO Live";
+            });
         }
-    setInterval(updateMetadata, 5000);
-    updateMetadata();
+        
+        // Check every 5 seconds
+        setInterval(updateMetadata, 5000);
+        updateMetadata();
     </script>
 </body>
 </html>
