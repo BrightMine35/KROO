@@ -65,31 +65,29 @@
 
     <script>
         function updateMetadata() {
-        // We add a 'cache-buster' (?t=...) to force the browser to get fresh data
-        fetch('http://10.43.30.79:8000/status-json.xsl?t=' + new Date().getTime(), {
-            mode: 'cors' // Explicitly ask for Cross-Origin permission
-        })
+        fetch('http://10.43.30.79:8000/status-json.xsl?t=' + new Date().getTime())
         .then(response => response.json())
         .then(data => {
+            console.log("Icecast Data Received:", data); // THIS SHOWS DATA IN THE CONSOLE
+            
             let track = "K-ROO Student Radio";
+            
             if (data.icestats && data.icestats.source) {
-                const source = data.icestats.source;
-                // If there's only one source, it might not be an array
-                if (Array.isArray(source)) {
-                    const liveMount = source.find(s => s.listenurl && s.listenurl.includes('/live'));
-                    console.log(data); // This will show you exactly what Icecast is sending in the console
-                } else {
-                    track = source.title;
+                const sources = Array.isArray(data.icestats.source) ? data.icestats.source : [data.icestats.source];
+                
+                // Look for the source that actually has a title
+                const activeSource = sources.find(s => s.title && s.title !== "");
+                if (activeSource) {
+                    track = activeSource.title;
                 }
             }
-            document.getElementById('track-info').innerText = track || "K-ROO Student Radio";
+            document.getElementById('track-info').innerText = track;
         })
         .catch(err => {
-            console.error("Metadata Fetch Error:", err);
-            document.getElementById('track-info').innerText = "K-ROO Live";
+            console.error("Connection Error:", err);
+            document.getElementById('track-info').innerText = "Offline or Blocked";
         });
-    }
-    // Refresh every 5 seconds for snappier updates
+        }
     setInterval(updateMetadata, 5000);
     updateMetadata();
     </script>
