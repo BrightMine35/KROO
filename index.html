@@ -12,10 +12,6 @@
       <div class="overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 51, 160, 0.4); display: flex; flex-direction: column; justify-content: center; align-items: center;">
           <h1 style="margin: 0; font-size: 3.5em; color: #FFDD00; text-shadow: 2px 2px 10px rgba(0,0,0,0.7);">K-ROO Live</h1>
           <p style="color: white; font-size: 1.5em; margin-top: 10px;">The Voice of UMKC</p>
-          
-          <p style="color: #FFDD00; font-weight: bold; margin-top: 20px; background: rgba(0,0,0,0.5); padding: 10px 20px; border-radius: 5px; text-align: center;">
-             Be back February 1st 12AM, CST (10PM PST) - intermittent testing until then
-          </p>
      </div>
    </header>
 
@@ -25,7 +21,7 @@
         
             <div class="video-container" style="position: relative; padding-bottom: 56.25%; height: 0; max-height: 500px; overflow: hidden; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
                <iframe 
-                    src="https://www.youtube.com/embed/ySZO8BykFN8?autoplay=1&mute=1" 
+                    src="https://www.youtube.com/embed/videoseries?list=PL1FttfnMOMng-aI9SzkpxDvhTsgovPFAD&autoplay=1&mute=1" 
                     style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
                     frameborder="0" 
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
@@ -34,22 +30,22 @@
             </div>
 
             <p style="font-size: 0.9em; margin: 10px 0 20px; color: #6e6e6e;">
-                Official K-ROO Video Stream | Live from UMKC
+                K-ROO Preview Playlist | Official Video Stream Coming Soon
             </p>
 
-             <div id="metadata-bar">
-                <span id="track-label">Live on Air</span>
-                <span id="track-info">Connecting to Bridge...</span>
-                </div>
+             <div id="metadata-bar" style="text-align: center; margin-bottom: 10px; font-family: sans-serif; padding: 15px; background: #f8f9fa; border-radius: 10px; border-left: 5px solid #0033A0;">
+                <span id="track-label" style="font-weight: bold; color: #0033A0; letter-spacing: 1px;">ON AIR:</span>
+                <span id="track-info" style="color: #333; font-style: italic; margin-left: 10px;">Demo Stream Active</span>
+            </div>
 
             <div style="background: #e1e8f0; padding: 20px; border-radius: 50px; margin-top: 5px;">
                 <audio controls style="width: 100%;">
-                    <source src="http://10.43.30.79:8000/live" type="audio/mpeg" />
+                    <source src="https://icecast.radiofrance.fr/fiprock-midfi.mp3" type="audio/mpeg" />
                     Your browser does not support the audio element.
                 </audio>
             </div>
             
-            <p class="note" style="margin-top: 15px; font-weight: bold; color: #0033A0; text-align: center;">Official K-ROO Audio Stream</p>
+            <p class="note" style="margin-top: 15px; font-weight: bold; color: #0033A0; text-align: center;">K-ROO Station Preview</p>
         </section>
 
         <section class="about" style="margin-top: 60px;">
@@ -64,24 +60,21 @@
     </footer>
 
     <script>
-       const NPOINT_ID = "YOUR_ID_HERE"; // <--- Put the SAME ID here
-
+        // We'll leave your npoint bridge code ready for when you return
         function updateMetadata() {
             fetch(`https://api.npoint.io/29641e2ecc860e960df9`)
             .then(response => response.json())
             .then(data => {
-                // We just grab the "track" field from our Cloud Chalkboard
-                const track = data.track || "K-ROO Student Radio";
+                const track = data.track || "K-ROO Station Preview";
                 document.getElementById('track-info').innerText = track;
             })
             .catch(err => {
-                console.error("Bridge Fetch Error:", err);
-                document.getElementById('track-info').innerText = "K-ROO Live";
+                // In demo mode, we just show a static title
+                document.getElementById('track-info').innerText = "K-ROO Student Radio";
             });
         }
         
-        // Check every 5 seconds
-        setInterval(updateMetadata, 5000);
+        setInterval(updateMetadata, 10000);
         updateMetadata();
     </script>
 </body>
