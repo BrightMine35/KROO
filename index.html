@@ -23,51 +23,46 @@
         .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
        
-            #schedule-container {
-                width: 100%;
-                overflow-x: auto; /* Allows swiping left/right on phones */
-                margin-top: 20px;
-                border-radius: 12px;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            }
-
-            .schedule-table td: first-child {
-                min-width: 110px;
-                font-weight: 700;
-                color: #0033A0;
-                background: #fdfdfd;
-            }
-            .schedule-table {
-                width: 100%;
-                border-collapse: collapse;
-                background: white;
-                font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-                min-width: 600px; /* Prevents squishing */
-            }
-        
-            .schedule-table th {
-                background: #0033A0; /* UMKC Blue */
-                color: #FFDD00;    /* UMKC Gold */
-                padding: 15px;
-                text-transform: uppercase;
-                font-size: 0.85em;
-                letter-spacing: 1px;
-                text-align: left;
-                position: sticky;
-                top: 0;
-            }
-        
-            .schedule-table td {
-                border-bottom: 1px solid #eee;
-                padding: 12px 15px;
-                font-size: 0.95em;
-                color: #333;
-            }
-        
-        
-            .schedule-table tr:hover {
-                background-color: #fff9e6; /* Light gold tint on hover */
-            }
+               #schedule-container {
+                    width: 100%;
+                    overflow-x: auto; /* Essential for mobile swiping */
+                    margin: 20px 0;
+                    border: 1px solid #ddd;
+                    border-radius: 8px;
+                }
+                
+                .schedule-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    min-width: 900px; /* Forces it to be wide enough to read */
+                    table-layout: fixed; /* Ensures all columns are the exact same width */
+                }
+                
+                .schedule-table th, .schedule-table td {
+                    padding: 15px 10px;
+                    border: 1px solid #eee;
+                    text-align: center;
+                    word-wrap: break-word; /* Prevents long show names from breaking the layout */
+                    font-size: 0.9em;
+                }
+                
+                .schedule-table th {
+                    background-color: #0033A0;
+                    color: white;
+                    text-transform: uppercase;
+                }
+                
+                /* Make the TIME column stand out */
+                .schedule-table td:first-child {
+                    background-color: #f8f9fa;
+                    font-weight: bold;
+                    color: #0033A0;
+                    width: 120px; /* Gives the time column a set size */
+                }
+                
+                .schedule-table tr:hover {
+                    background-color: #f1f1f1;
+                }
     </style>
 </head>
 <body>
@@ -180,41 +175,39 @@
                 const response = await fetch(SHEET_CSV_URL);
                 const csvText = await response.text();
                 
-                // 1. Split into rows and then into individual cells
-                let allRows = csvText.split(/\r?\n/).map(row => {
-                    return row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || row.split(',');
-                });
+                // Split by line, then split by comma. 
+                // We use a simpler split here to ensure empty cells aren't skipped.
+                let allRows = csvText.split(/\r?\n/).map(row => row.split(','));
         
-                // 2. THE SLICE: Start at Row 6 (index 5) and go to Row 27 (index 27)
-                // Then for each row, take only Columns B through I (indices 1 through 8)
+                // TARGET: Rows 6-27 (Indices 5 to 27)
+                // TARGET: Columns B-I (Indices 1 to 9)
                 const targetRows = allRows.slice(5, 27).map(row => row.slice(1, 9));
         
                 if (targetRows.length === 0) return;
         
                 let tableHtml = '<thead><tr>';
-                // 3. Build Headers (The new first row of our slice: MON, TUES, etc.)
+                // Build Headers (MON, TUES, etc.)
                 targetRows[0].forEach(col => {
-                    tableHtml += `<th>${col.replace(/"/g, '').trim()}</th>`;
+                    let headerText = col ? col.replace(/"/g, '').trim() : "";
+                    tableHtml += `<th>${headerText}</th>`;
                 });
                 tableHtml += '</tr></thead><tbody>';
         
-                // 4. Build Data Rows (The actual times and shows)
+                // Build Data Rows
                 for (let i = 1; i < targetRows.length; i++) {
-                    const currentRow = targetRows[i];
-                    if (currentRow && currentRow.length > 0) {
-                        tableHtml += '<tr>';
-                        currentRow.forEach(col => {
-                            let cellData = col ? col.replace(/"/g, '').trim() : "";
-                            tableHtml += `<td>${cellData === "" || cellData === "--" ? "--" : cellData}</td>`;
-                        });
-                        tableHtml += '</tr>';
-                    }
+                    tableHtml += '<tr>';
+                    targetRows[i].forEach(col => {
+                        let cellData = col ? col.replace(/"/g, '').trim() : "";
+                        // If cell is empty, keep it empty so the grid stays aligned
+                        tableHtml += `<td>${cellData}</td>`;
+                    });
+                    tableHtml += '</tr>';
                 }
                 tableHtml += '</tbody>';
                 document.getElementById('schedule-table').innerHTML = tableHtml;
             } catch (err) {
                 console.error("Schedule Load Error:", err);
-                document.getElementById('schedule-table').innerHTML = "<tr><td>Schedule loading... please refresh.</td></tr>";
+                document.getElementById('schedule-table').innerHTML = "<tr><td>Error loading schedule.</td></tr>";
             }
         }
 
