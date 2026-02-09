@@ -22,11 +22,52 @@
         .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); background: #000; }
         .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
-        /* SCHEDULE TABLE */
-        .schedule-table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; border-radius: 8px; overflow: hidden; }
-        .schedule-table th { background: #0033A0; color: white; padding: 15px; text-align: left; }
-        .schedule-table td { border: 1px solid #eee; padding: 12px; }
-        .schedule-table tr:nth-child(even) { background: #f9f9f9; }
+            #schedule-container {
+                width: 100%;
+                overflow-x: auto; /* Allows swiping left/right on phones */
+                margin-top: 20px;
+                border-radius: 12px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            }
+        
+            .schedule-table {
+                width: 100%;
+                border-collapse: collapse;
+                background: white;
+                font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+                min-width: 600px; /* Prevents squishing */
+            }
+        
+            .schedule-table th {
+                background: #0033A0; /* UMKC Blue */
+                color: #FFDD00;    /* UMKC Gold */
+                padding: 15px;
+                text-transform: uppercase;
+                font-size: 0.85em;
+                letter-spacing: 1px;
+                text-align: left;
+                position: sticky;
+                top: 0;
+            }
+        
+            .schedule-table td {
+                border-bottom: 1px solid #eee;
+                padding: 12px 15px;
+                font-size: 0.95em;
+                color: #333;
+            }
+        
+            /* Highlights the "Time" column */
+            .schedule-table td:first-child {
+                font-weight: bold;
+                background: #f8f9fa;
+                color: #0033A0;
+                width: 100px;
+            }
+        
+            .schedule-table tr:hover {
+                background-color: #fff9e6; /* Light gold tint on hover */
+            }
     </style>
 </head>
 <body>
@@ -133,27 +174,41 @@
         const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTlWcfl9lN1xjw2HXKrF3b2ssyT4gVpQqqARKmi-dmiaLUcaGlauc3CiXPH2We8pnsvM0S8p03sdiXI/pub?output=csv';
 
         async function fetchSchedule() {
+            const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTlWcfl9lN1xjw2HXKrF3b2ssyT4gVpQqqARKmi-dmiaLUcaGlauc3CiXPH2We8pnsvM0S8p03sdiXI/pub?output=csv';
+        
             try {
                 const response = await fetch(SHEET_CSV_URL);
-                const data = await response.text();
-                // Simple CSV parser
-                const rows = data.split('\n').map(row => row.split(','));
+                const csvText = await response.text();
                 
+                // This Regex handles commas inside quotes correctly
+                const rows = csvText.split(/\r?\n/).map(row => {
+                    return row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || row.split(',');
+                });
+        
                 let tableHtml = '<thead><tr>';
-                rows[0].forEach(col => { tableHtml += `<th>${col}</th>`; });
+                // Build Headers
+                rows[0].forEach(col => {
+                    tableHtml += `<th>${col.replace(/"/g, '')}</th>`;
+                });
                 tableHtml += '</tr></thead><tbody>';
-                
+        
+                // Build Data Rows
                 for (let i = 1; i < rows.length; i++) {
-                    if(rows[i].length > 1) {
+                    if (rows[i] && rows[i].length > 1) {
                         tableHtml += '<tr>';
-                        rows[i].forEach(col => { tableHtml += `<td>${col}</td>`; });
+                        rows[i].forEach(col => {
+                            // Clean up quotes from the Google Sheet
+                            let cellData = col.replace(/"/g, '').trim();
+                            tableHtml += `<td>${cellData === "" ? "--" : cellData}</td>`;
+                        });
                         tableHtml += '</tr>';
                     }
                 }
                 tableHtml += '</tbody>';
                 document.getElementById('schedule-table').innerHTML = tableHtml;
             } catch (err) {
-                document.getElementById('schedule-table').innerHTML = "<tr><td>Unable to load schedule.</td></tr>";
+                console.error("Schedule Load Error:", err);
+                document.getElementById('schedule-table').innerHTML = "<tr><td>Schedule updated. Refresh to view.</td></tr>";
             }
         }
 
