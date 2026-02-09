@@ -51,13 +51,24 @@
                     color: white;
                     text-transform: uppercase;
                 }
+                .schedule-table td {
+                    padding: 12px 10px;
+                    border: 1px solid #eee;
+                    text-align: left; /* Left align for easier reading of show names */
+                    vertical-align: top;
+                    font-size: 0.85em;
+                    line-height: 1.4;
+                    min-width: 120px; /* Ensures columns don't collapse */
+                }
                 
-                /* Make the TIME column stand out */
+                /* Force the Time column to stay consistent */
                 .schedule-table td:first-child {
-                    background-color: #f8f9fa;
                     font-weight: bold;
                     color: #0033A0;
-                    width: 120px; /* Gives the time column a set size */
+                    background: #fcfcfc;
+                    width: 90px;
+                    min-width: 90px;
+                    text-align: center;
                 }
                 
                 .schedule-table tr:hover {
@@ -165,22 +176,42 @@
             evt.currentTarget.className += " active";
         }
 
-        // --- AUTOMATED SCHEDULE FROM GOOGLE SHEET ---
-        const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTlWcfl9lN1xjw2HXKrF3b2ssyT4gVpQqqARKmi-dmiaLUcaGlauc3CiXPH2We8pnsvM0S8p03sdiXI/pub?output=csv';
-
-        async function fetchSchedule() {
+       async function fetchSchedule() {
             const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTlWcfl9lN1xjw2HXKrF3b2ssyT4gVpQqqARKmi-dmiaLUcaGlauc3CiXPH2We8pnsvM0S8p03sdiXI/pub?output=csv';
         
             try {
                 const response = await fetch(SHEET_CSV_URL);
                 const csvText = await response.text();
                 
-                // Split by line, then split by comma. 
-                // We use a simpler split here to ensure empty cells aren't skipped.
-                let allRows = csvText.split(/\r?\n/).map(row => row.split(','));
+                // This function correctly handles commas inside "Quotes"
+                function parseCSV(text) {
+                    const rows = [];
+                    let currRow = [];
+                    let currCell = '';
+                    let inQuotes = false;
+                    
+                    for (let i = 0; i < text.length; i++) {
+                        let char = text[i];
+                        if (char === '"') { inQuotes = !inQuotes; }
+                        else if (char === ',' && !inQuotes) {
+                            currRow.push(currCell.trim());
+                            currCell = '';
+                        } else if ((char === '\n' || char === '\r') && !inQuotes) {
+                            if (currCell || currRow.length > 0) {
+                                currRow.push(currCell.trim());
+                                rows.push(currRow);
+                                currRow = [];
+                                currCell = '';
+                            }
+                        } else { currCell += char; }
+                    }
+                    return rows;
+                }
         
-                // TARGET: Rows 6-27 (Indices 5 to 27)
-                // TARGET: Columns B-I (Indices 1 to 9)
+                const allRows = parseCSV(csvText);
+        
+                // SLICE: Row 6 to 27 (Indices 5 to 27)
+                // SLICE: Columns B to I (Indices 1 to 9)
                 const targetRows = allRows.slice(5, 27).map(row => row.slice(1, 9));
         
                 if (targetRows.length === 0) return;
@@ -188,8 +219,7 @@
                 let tableHtml = '<thead><tr>';
                 // Build Headers (MON, TUES, etc.)
                 targetRows[0].forEach(col => {
-                    let headerText = col ? col.replace(/"/g, '').trim() : "";
-                    tableHtml += `<th>${headerText}</th>`;
+                    tableHtml += `<th>${col || ""}</th>`;
                 });
                 tableHtml += '</tr></thead><tbody>';
         
@@ -197,9 +227,9 @@
                 for (let i = 1; i < targetRows.length; i++) {
                     tableHtml += '<tr>';
                     targetRows[i].forEach(col => {
-                        let cellData = col ? col.replace(/"/g, '').trim() : "";
-                        // If cell is empty, keep it empty so the grid stays aligned
-                        tableHtml += `<td>${cellData}</td>`;
+                        let cellData = col || "";
+                        // If it's empty, show a dash for clean looks
+                        tableHtml += `<td>${cellData === "" ? "--" : cellData}</td>`;
                     });
                     tableHtml += '</tr>';
                 }
@@ -207,25 +237,11 @@
                 document.getElementById('schedule-table').innerHTML = tableHtml;
             } catch (err) {
                 console.error("Schedule Load Error:", err);
-                document.getElementById('schedule-table').innerHTML = "<tr><td>Error loading schedule.</td></tr>";
             }
         }
-
-        // --- METADATA (NPOINT BRIDGE) ---
-        function updateMetadata() {
-            fetch(`https://api.npoint.io/29641e2ecc860e960df9`)
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('track-info').innerText = data.track || "Live Broadcast";
-            })
-            .catch(() => {
-                document.getElementById('track-info').innerText = "K-ROO Radio";
-            });
-        }
-
-        fetchSchedule();
-        updateMetadata();
-        setInterval(updateMetadata, 10000);
+    fetchSchedule();
+    updateMetadata(); // Ensure you have your updateMetadata function defined above this
+    setInterval(updateMetadata, 10000);
     </script>
 </body>
 </html>
