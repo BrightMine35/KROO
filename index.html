@@ -180,26 +180,32 @@
                 const response = await fetch(SHEET_CSV_URL);
                 const csvText = await response.text();
                 
-                // This Regex handles commas inside quotes correctly
-                const rows = csvText.split(/\r?\n/).map(row => {
+                // 1. Split into rows and then into individual cells
+                let allRows = csvText.split(/\r?\n/).map(row => {
                     return row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || row.split(',');
                 });
         
+                // 2. THE SLICE: Start at Row 6 (index 5) and go to Row 27 (index 27)
+                // Then for each row, take only Columns B through I (indices 1 through 8)
+                const targetRows = allRows.slice(5, 27).map(row => row.slice(1, 9));
+        
+                if (targetRows.length === 0) return;
+        
                 let tableHtml = '<thead><tr>';
-                // Build Headers
-                rows[0].forEach(col => {
-                    tableHtml += `<th>${col.replace(/"/g, '')}</th>`;
+                // 3. Build Headers (The new first row of our slice: MON, TUES, etc.)
+                targetRows[0].forEach(col => {
+                    tableHtml += `<th>${col.replace(/"/g, '').trim()}</th>`;
                 });
                 tableHtml += '</tr></thead><tbody>';
         
-                // Build Data Rows
-                for (let i = 1; i < rows.length; i++) {
-                    if (rows[i] && rows[i].length > 1) {
+                // 4. Build Data Rows (The actual times and shows)
+                for (let i = 1; i < targetRows.length; i++) {
+                    const currentRow = targetRows[i];
+                    if (currentRow && currentRow.length > 0) {
                         tableHtml += '<tr>';
-                        rows[i].forEach(col => {
-                            // Clean up quotes from the Google Sheet
-                            let cellData = col.replace(/"/g, '').trim();
-                            tableHtml += `<td>${cellData === "" ? "--" : cellData}</td>`;
+                        currentRow.forEach(col => {
+                            let cellData = col ? col.replace(/"/g, '').trim() : "";
+                            tableHtml += `<td>${cellData === "" || cellData === "--" ? "--" : cellData}</td>`;
                         });
                         tableHtml += '</tr>';
                     }
@@ -208,7 +214,7 @@
                 document.getElementById('schedule-table').innerHTML = tableHtml;
             } catch (err) {
                 console.error("Schedule Load Error:", err);
-                document.getElementById('schedule-table').innerHTML = "<tr><td>Schedule updated. Refresh to view.</td></tr>";
+                document.getElementById('schedule-table').innerHTML = "<tr><td>Schedule loading... please refresh.</td></tr>";
             }
         }
 
