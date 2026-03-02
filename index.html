@@ -172,10 +172,29 @@
         function openTab(evt, tabName) {
             var i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabcontent.length; i++) { tabcontent[i].style.display = "none"; }
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+                
+                // --- NEW: STOP HIDDEN VIDEOS ---
+                // This finds any iframe in the tab being hidden and clears its 'src' 
+                // to save user bandwidth/CPU.
+                let iframes = tabcontent[i].getElementsByTagName('iframe');
+                for (let f of iframes) { f.setAttribute('data-src', f.src); f.src = ''; }
+            }
+        
             tablinks = document.getElementsByClassName("tab-link");
-            for (i = 0; i < tablinks.length; i++) { tablinks[i].className = tablinks[i].className.replace(" active", ""); }
-            document.getElementById(tabName).style.display = "block";
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+        
+            let activeTab = document.getElementById(tabName);
+            activeTab.style.display = "block";
+            
+            // --- NEW: LOAD ACTIVE VIDEOS ---
+            // This restores the 'src' only for the tab the user just clicked.
+            let activeIframes = activeTab.getElementsByTagName('iframe');
+            for (let f of activeIframes) { if (f.getAttribute('data-src')) f.src = f.getAttribute('data-src'); }
+        
             evt.currentTarget.className += " active";
         }
 
