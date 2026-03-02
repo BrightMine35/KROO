@@ -3,10 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>K-ROO Radio | The Voice of UMKC | Student Radio Station</title>
-    <meta name="description" content="Listen to K-ROO Radio, UMKC's official student-run radio station. Live streams, student podcasts, and the latest hits from the heart of Kansas City.">
-
+    <title>K-ROO Radio | The Voice of UMKC</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="favicon.PNG">
     <style>
@@ -25,58 +22,11 @@
         .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); background: #000; }
         .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
-       
-               #schedule-container {
-                    width: 100%;
-                    overflow-x: auto; /* Essential for mobile swiping */
-                    margin: 20px 0;
-                    border: 1px solid #ddd;
-                    border-radius: 8px;
-                }
-                
-                .schedule-table {
-                    width: 100%;
-                    border-collapse: collapse;
-                    min-width: 900px; /* Forces it to be wide enough to read */
-                    table-layout: fixed; /* Ensures all columns are the exact same width */
-                }
-                
-                .schedule-table th, .schedule-table td {
-                    padding: 15px 10px;
-                    border: 1px solid #eee;
-                    text-align: center;
-                    word-wrap: break-word; /* Prevents long show names from breaking the layout */
-                    font-size: 0.9em;
-                }
-                
-                .schedule-table th {
-                    background-color: #0033A0;
-                    color: white;
-                    text-transform: uppercase;
-                }
-                .schedule-table td {
-                    padding: 12px 10px;
-                    border: 1px solid #eee;
-                    text-align: left; /* Left align for easier reading of show names */
-                    vertical-align: top;
-                    font-size: 0.85em;
-                    line-height: 1.4;
-                    min-width: 120px; /* Ensures columns don't collapse */
-                }
-                
-                /* Force the Time column to stay consistent */
-                .schedule-table td:first-child {
-                    font-weight: bold;
-                    color: #0033A0;
-                    background: #fcfcfc;
-                    width: 90px;
-                    min-width: 90px;
-                    text-align: center;
-                }
-                
-                .schedule-table tr:hover {
-                    background-color: #f1f1f1;
-                }
+        #schedule-container { width: 100%; overflow-x: auto; margin: 20px 0; border: 1px solid #ddd; border-radius: 8px; }
+        .schedule-table { width: 100%; border-collapse: collapse; min-width: 900px; table-layout: fixed; }
+        .schedule-table th, .schedule-table td { padding: 15px 10px; border: 1px solid #eee; text-align: left; vertical-align: top; font-size: 0.85em; }
+        .schedule-table th { background-color: #0033A0; color: white; text-transform: uppercase; text-align: center; }
+        .schedule-table td:first-child { font-weight: bold; color: #0033A0; background: #fcfcfc; width: 90px; text-align: center; }
     </style>
 </head>
 <body>
@@ -97,35 +47,16 @@
     <main style="max-width: 1000px; margin: 0 auto;">
 
         <section id="Shows" class="tab-content active">
-            
             <div class="show-section">
                 <h2 class="show-label">Slated Podcasts</h2>
                 <div class="video-wrapper">
                     <iframe src="https://www.youtube.com/embed/videoseries?list=PL6iSD_biiywPQKJ6-AS8adaXZsSymCl2v" frameborder="0" allowfullscreen></iframe>
                 </div>
             </div>
-
             <div class="show-section">
                 <h2 class="show-label">More Peak Content</h2>
                 <div class="video-wrapper">
                     <iframe src="https://www.youtube.com/embed/videoseries?list=PL1FttfnMOMng-aI9SzkpxDvhTsgovPFAD" frameborder="0" allowfullscreen></iframe>
-                </div>
-            </div>
-
-            <div class="show-section">
-                <h2 class="show-label">Tweaker Tunes</h2>
-                <div class="video-wrapper">
-                    <iframe src="https://www.youtube.com/embed/videoseries?list=PL6iSD_biiywNa-PFdaHwVGfuMVl70z_bU" frameborder="0" allowfullscreen></iframe>
-                </div>
-                <p style="font-style: italic; color: #666; margin-top: 10px;">Music selection - Cloud Instance coming soon.</p>
-            </div>
-
-            <div class="show-section">
-                <h2 class="show-label">24/7 Audio Preview</h2>
-                <div style="background: #e1e8f0; padding: 20px; border-radius: 50px;">
-                    <audio controls style="width: 100%;">
-                        <source src="https://icecast.radiofrance.fr/fiprock-midfi.mp3" type="audio/mpeg">
-                    </audio>
                 </div>
             </div>
         </section>
@@ -135,175 +66,114 @@
             <div class="video-wrapper">
                 <iframe src="https://www.youtube.com/embed/39pk1otqRJc" frameborder="0" allowfullscreen></iframe>
             </div>
-            
             <div style="margin-top: 25px; padding: 20px; background: #f0f4f8; border-radius: 15px; text-align: center;">
                 <div style="margin-bottom: 15px; font-family: monospace; font-size: 1.1em; color: #0033A0;">
-                    <strong>[NOW PLAYING]:</strong> <span id="track-info">Waiting for Station Metadata...</span>
+                    <strong>[NOW PLAYING]:</strong> <span id="track-info">Connecting to Cloud Station...</span>
                 </div>
                 <audio controls style="width: 100%;">
-                    <source src="http://10.43.30.79:8000/live" type="audio/mpeg">
+                    <source src="http://164.152.16.132:8000/live" type="audio/mpeg">
                 </audio>
-                <p style="font-size: 0.8em; margin-top: 10px; color: #666;">(Local Campus Connection Required)</p>
             </div>
         </section>
 
         <section id="About" class="tab-content">
-            <a href="team.html" class="tab-link" style="background: #0033A0; display: inline-block; margin-top: 20px;">MEET THE CREW</a>
+            <div style="text-align: center; margin-bottom: 30px;">
+                 <a href="team.html" class="tab-link" style="background: #0033A0; display: inline-block;">MEET THE CREW</a>
+            </div>
             <h2 class="show-label">Weekly Schedule</h2>
             <div id="schedule-container">
                 <table class="schedule-table" id="schedule-table">
                     <thead><tr><th>Loading Schedule...</th></tr></thead>
                 </table>
             </div>
-
-            <div style="margin-top: 50px;">
-                <h2 class="show-label">About the Station</h2>
-                <p>K-ROO is the student-run radio hub of UMKC. We provide a platform for student creators and broadcasters to reach the campus and beyond.</p>
-                <p><strong>Management Contact:</strong> <a href="mailto:krooradio@gmail.com" style="color: #0033A0; font-weight: bold;">krooradio@gmail.com</a></p>
-            </div>
         </section>
-
     </main>
 
-    <footer style="text-align: center; padding: 60px 20px; color: #999; font-size: 0.8em;">
-        <p>© 2026 K-ROO Student Radio | UMKC IT&C Division</p>
-    </footer>
-
     <script>
+        // --- FIXED TAB LOGIC ---
         function openTab(evt, tabName) {
-            var i, tabcontent, tablinks;
-            tabcontent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
-                
-                // --- NEW: STOP HIDDEN VIDEOS ---
-                // This finds any iframe in the tab being hidden and clears its 'src' 
-                // to save user bandwidth/CPU.
-                let iframes = tabcontent[i].getElementsByTagName('iframe');
-                for (let f of iframes) { f.setAttribute('data-src', f.src); f.src = ''; }
+            const contents = document.getElementsByClassName("tab-content");
+            const links = document.getElementsByClassName("tab-link");
+
+            // Hide all tabs and PAUSE iframes to save bandwidth
+            for (let content of contents) {
+                content.style.display = "none";
+                let iframes = content.getElementsByTagName('iframe');
+                for (let f of iframes) {
+                    if (!f.hasAttribute('data-src')) f.setAttribute('data-src', f.src);
+                    f.src = ''; // Effectively stops the video/loading
+                }
             }
-        
-            tablinks = document.getElementsByClassName("tab-link");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" active", "");
+
+            // Remove active class from buttons
+            for (let link of links) {
+                link.classList.remove("active");
             }
-        
-            let activeTab = document.getElementById(tabName);
+
+            // Show current tab and RE-LOAD its iframes
+            const activeTab = document.getElementById(tabName);
             activeTab.style.display = "block";
-            
-            // --- NEW: LOAD ACTIVE VIDEOS ---
-            // This restores the 'src' only for the tab the user just clicked.
             let activeIframes = activeTab.getElementsByTagName('iframe');
-            for (let f of activeIframes) { if (f.getAttribute('data-src')) f.src = f.getAttribute('data-src'); }
-        
-            evt.currentTarget.className += " active";
+            for (let f of activeIframes) {
+                if (f.hasAttribute('data-src')) f.src = f.getAttribute('data-src');
+            }
+
+            evt.currentTarget.classList.add("active");
         }
 
+        // --- SMART METADATA WITH FALLBACK ---
         async function updateMetadata() {
-            const TRACK_ELEMENT = document.getElementById('track-info');
-            
+            const el = document.getElementById('track-info');
             try {
-                // 1. TRY THE CLOUD INSTANCE FIRST
-                const response = await fetch('http://164.152.16.132/api/nowplaying/kroo');
-                if (!response.ok) throw new Error("Cloud Offline");
-                
-                const data = await response.json();
-                if (data && data.now_playing) {
-                    TRACK_ELEMENT.innerText = data.now_playing.song.text;
-                    return; // Exit if successful
+                const res = await fetch('http://164.152.16.132/api/nowplaying/kroo');
+                const data = await res.json();
+                if (data?.now_playing) {
+                    el.innerText = data.now_playing.song.text;
+                    return;
                 }
-            } catch (err) {
-                console.warn("AzuraCast Cloud not responding, trying Npoint Bridge...");
-            }
+            } catch (e) { console.warn("Cloud offline, checking bridge..."); }
 
             try {
-                // 2. FALLBACK TO NPOINT (Your current setup)
-                const bridge = await fetch('https://api.npoint.io/29641e2ecc860e960df9');
-                const bData = await bridge.json();
-                if (bData && bData.track) {
-                    TRACK_ELEMENT.innerText = bData.track;
-                }
-            } catch (err) {
-                console.error("All Metadata Sources Failed:", err);
-                TRACK_ELEMENT.innerText = "Station Offline or Connecting...";
-            }
+                const res = await fetch('https://api.npoint.io/29641e2ecc860e960df9');
+                const data = await res.json();
+                if (data?.track) el.innerText = data.track;
+            } catch (e) { el.innerText = "K-ROO Offline"; }
         }
-       async function fetchSchedule() {
-            const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTlWcfl9lN1xjw2HXKrF3b2ssyT4gVpQqqARKmi-dmiaLUcaGlauc3CiXPH2We8pnsvM0S8p03sdiXI/pub?output=csv';
-        
+
+        // --- FIXED 6 AM SCHEDULE LOGIC ---
+        async function fetchSchedule() {
+            const URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTlWcfl9lN1xjw2HXKrF3b2ssyT4gVpQqqARKmi-dmiaLUcaGlauc3CiXPH2We8pnsvM0S8p03sdiXI/pub?output=csv';
             try {
-                const response = await fetch(SHEET_CSV_URL);
-                const csvText = await response.text();
+                const res = await fetch(URL);
+                const text = await res.text();
+                const rows = text.split('\n').map(r => r.split(',').map(c => c.replace(/"/g, '')));
                 
-                // This function correctly handles commas inside "Quotes"
-                function parseCSV(text) {
-                    const rows = [];
-                    let currRow = [];
-                    let currCell = '';
-                    let inQuotes = false;
-                    
-                    for (let i = 0; i < text.length; i++) {
-                        let char = text[i];
-                        if (char === '"') { inQuotes = !inQuotes; }
-                        else if (char === ',' && !inQuotes) {
-                            currRow.push(currCell.trim());
-                            currCell = '';
-                        } else if ((char === '\n' || char === '\r') && !inQuotes) {
-                            if (currCell || currRow.length > 0) {
-                                currRow.push(currCell.trim());
-                                rows.push(currRow);
-                                currRow = [];
-                                currCell = '';
-                            }
-                        } else { currCell += char; }
-                    }
-                    return rows;
-                }
-        
-                const allRows = parseCSV(csvText);
-        
-                // SLICE: Row 6 to 27 (Indices 5 to 27)
-                // SLICE: Columns B to I (Indices 1 to 9)
-                const targetRows = allRows.slice(5, 27).map(row => row.slice(1, 9));
-        
-                if (targetRows.length === 0) return;
-        
-                let tableHtml = '<thead><tr>';
-                // Build Headers (MON, TUES, etc.)
-                targetRows[0].forEach(col => {
-                    tableHtml += `<th>${col || ""}</th>`;
-                });
-                tableHtml += '</tr></thead><tbody>';
-        
-                // --- BUILD DATA ROWS ---
+                const targetRows = rows.slice(5, 27);
+                let html = '<thead><tr>';
+                // Headers from index 1 to 8 (B to I)
+                for (let j = 1; j <= 8; j++) html += `<th>${targetRows[0][j] || ""}</th>`;
+                html += '</tr></thead><tbody>';
+
                 for (let i = 1; i < targetRows.length; i++) {
-                    tableHtml += '<tr>';
-                    
-                    targetRows[i].forEach((col, colIndex) => {
-                        let cellData = col || "";
-        
-                        // COLUMN 0 is the "Time" column. 
-                        // We override it with a manual calculation based on your 6 AM start.
-                        if (colIndex === 0) {
-                            let hour = (5 + i) % 12; // Start at 6 AM (which is index 1, so 5+1=6)
-                            if (hour === 0) hour = 12; // Fix midnight/noon
-                            let ampm = (5 + i) >= 12 && (5 + i) < 24 ? "PM" : "AM";
-                            cellData = `${hour}:00 ${ampm}`;
+                    html += '<tr>';
+                    for (let j = 1; j <= 8; j++) {
+                        let data = targetRows[i][j] || "";
+                        if (j === 1) { // Force Time Calc for first column
+                            let h = (5 + i) % 12 || 12;
+                            let ap = (5 + i) >= 12 ? "PM" : "AM";
+                            data = `${h}:00 ${ap}`;
+                        }
+                        html += `<td>${data || "--"}</td>`;
+                    }
+                    html += '</tr>';
                 }
+                document.getElementById('schedule-table').innerHTML = html + '</tbody>';
+            } catch (e) { console.error("Schedule Error", e); }
+        }
 
-                tableHtml += `<td>${cellData === "" ? "--" : cellData}</td>`;
-            });
-            tableHtml += '</tr>';
-        }
-                tableHtml += '</tbody>';
-                document.getElementById('schedule-table').innerHTML = tableHtml;
-            } catch (err) {
-                console.error("Schedule Load Error:", err);
-            }
-        }
-    fetchSchedule();
-    updateMetadata(); // Ensure you have your updateMetadata function defined above this
-    setInterval(updateMetadata, 5000);
+        fetchSchedule();
+        updateMetadata();
+        setInterval(updateMetadata, 5000);
     </script>
 </body>
 </html>
