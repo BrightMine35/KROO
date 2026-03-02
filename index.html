@@ -238,16 +238,26 @@
                 });
                 tableHtml += '</tr></thead><tbody>';
         
-                // Build Data Rows
+                // --- BUILD DATA ROWS ---
                 for (let i = 1; i < targetRows.length; i++) {
                     tableHtml += '<tr>';
-                    targetRows[i].forEach(col => {
+                    
+                    targetRows[i].forEach((col, colIndex) => {
                         let cellData = col || "";
-                        // If it's empty, show a dash for clean looks
-                        tableHtml += `<td>${cellData === "" ? "--" : cellData}</td>`;
-                    });
-                    tableHtml += '</tr>';
+        
+                        // COLUMN 0 is the "Time" column. 
+                        // We override it with a manual calculation based on your 6 AM start.
+                        if (colIndex === 0) {
+                            let hour = (5 + i) % 12; // Start at 6 AM (which is index 1, so 5+1=6)
+                            if (hour === 0) hour = 12; // Fix midnight/noon
+                            let ampm = (5 + i) >= 12 && (5 + i) < 24 ? "PM" : "AM";
+                            cellData = `${hour}:00 ${ampm}`;
                 }
+
+                tableHtml += `<td>${cellData === "" ? "--" : cellData}</td>`;
+            });
+            tableHtml += '</tr>';
+        }
                 tableHtml += '</tbody>';
                 document.getElementById('schedule-table').innerHTML = tableHtml;
             } catch (err) {
