@@ -199,17 +199,34 @@
         }
 
         async function updateMetadata() {
+            const TRACK_ELEMENT = document.getElementById('track-info');
+            
             try {
-                // Fetching from your npoint bridge defined in the Python script
-                const response = await fetch('https://api.npoint.io/29641e2ecc860e960df9');
+                // 1. TRY THE CLOUD INSTANCE FIRST
+                const response = await fetch('http://164.152.16.132/api/nowplaying/kroo');
+                if (!response.ok) throw new Error("Cloud Offline");
+                
                 const data = await response.json();
-                if (data && data.track) {
-                    document.getElementById('track-info').innerText = data.track;
-                    }
-                } catch (err) {
-                    console.error("Metadata Sync Error:", err);
-                    }
-                }    
+                if (data && data.now_playing) {
+                    TRACK_ELEMENT.innerText = data.now_playing.song.text;
+                    return; // Exit if successful
+                }
+            } catch (err) {
+                console.warn("AzuraCast Cloud not responding, trying Npoint Bridge...");
+            }
+
+            try {
+                // 2. FALLBACK TO NPOINT (Your current setup)
+                const bridge = await fetch('https://api.npoint.io/29641e2ecc860e960df9');
+                const bData = await bridge.json();
+                if (bData && bData.track) {
+                    TRACK_ELEMENT.innerText = bData.track;
+                }
+            } catch (err) {
+                console.error("All Metadata Sources Failed:", err);
+                TRACK_ELEMENT.innerText = "Station Offline or Connecting...";
+            }
+        }
        async function fetchSchedule() {
             const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTlWcfl9lN1xjw2HXKrF3b2ssyT4gVpQqqARKmi-dmiaLUcaGlauc3CiXPH2We8pnsvM0S8p03sdiXI/pub?output=csv';
         
