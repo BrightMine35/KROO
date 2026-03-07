@@ -50,7 +50,7 @@
         }
         
         // If it's a normal direct link (Imgur, etc.), just return it
-        if (url.length > 10) return url;
+        if (url.length < 10) return url;
 
         return 'rooradio.jpg';
     }
