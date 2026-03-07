@@ -36,61 +36,64 @@
         return url;
     }
         
-            async function loadTeam() {
-            const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTUaJ9SHaOPSloQTjP-ZM9kcLpOoFXQAHdI6950BxrwJ9QB-F18cy1uETqJWMsnuDQTGwhw4p8RSNKO/pub?gid=1056346171&single=true&output=csv';
+            // UPDATED WITH YOUR CREDENTIALS
+const SHEET_ID = '1Ml20oT7hC5kmeQtZrKyWdqiLQ67JzDzkD0aeLxi-zts'; 
+const API_KEY = 'AIzaSyAguGyfJE9dOZGfVpipfe7Hwui8CYQERF8'; 
+const RANGE = 'Form Responses 1!A2:G100'; // Change "Form Responses 1" to your tab name if different
+
+        async function loadTeam() {
             const container = document.getElementById('team-container');
-        
-            function fixDriveUrl(url) {
-                // Only run if the URL actually looks like a link
-                if (url && url.includes('drive.google.com')) {
-                    const id = url.split('/d/')[1]?.split('/')[0] || url.split('id=')[1]?.split('&')[0];
-                    return `https://drive.google.com/uc?export=view&id=${id}`;
-                }
-                // If it's too short or not a link, use the placeholder
-                if (!url || url.length < 10) return 'rooradio.jpg';
-                return url;
-            }
+            // Using the Google Sheets API v4 URL
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
         
             try {
-                const res = await fetch(`${CSV_URL}&t=${Date.now()}`);
-                const text = await res.text();
-                const rows = text.split(/\r?\n/).slice(1); 
+                const response = await fetch(url);
+                const data = await response.json();
+                const rows = data.values;
+        
+                if (!rows || rows.length === 0) {
+                    container.innerHTML = "<p style='text-align:center; grid-column:1/-1;'>No crew members found in the sheet.</p>";
+                    return;
+                }
         
                 let html = '';
-                rows.forEach((row) => {
-                    const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                    if (cols.length < 4) return; // Skip incomplete rows
+                rows.forEach(row => {
+                    // Mapping based on standard Google Form export:
+                    // [0] Timestamp, [1] Name, [2] Bio, [3] Photo URL, [6] Work Link
+                    const name = row[1];      
+                    const bio = row[2] || "No bio provided.";       
+                    const imgUrl = row[3];    
+                    const workLink = row[6] || "#"; 
         
-                    const name = cols[1]?.replace(/"/g, '').trim();
-                    const bio = cols[2]?.replace(/"/g, '').trim() || "No bio provided.";
-                    const img = fixDriveUrl(cols[3]?.replace(/"/g, '').trim());
-                    
-                    // Map the remaining columns for future use or display
-                    const category = cols[4]?.replace(/"/g, '').trim() || "";
-                    const role = cols[5]?.replace(/"/g, '').trim() || "";
-                    const workLink = cols[6]?.replace(/"/g, '').trim() || "#";
+                    // Skip empty rows or header leftovers
+                    if (!name || name === "Name" || name.includes('http')) return;
         
-                    // Skip garbage rows
-                    if (!name || name.toLowerCase().includes('helvetica')) return;
+                    const fixedImg = fixDriveUrl(imgUrl);
         
                     html += `
                         <div class="dj-card">
-                            <img src="${img}" class="dj-photo" onerror="this.src='rooradio.jpg'">
+                            <img src="${fixedImg}" class="dj-photo" onerror="this.src='rooradio.jpg'">
                             <div class="dj-info">
                                 <h2 class="dj-name">${name}</h2>
-                                ${role ? `<p style="color:#0033A0; font-weight:bold; margin-top:-10px;">${role}</p>` : ''}
                                 <p class="dj-bio">${bio}</p>
-                                <p style="font-size: 0.8em; color: #888;">Category: ${category}</p>
                                 <a href="${workLink}" class="playlist-btn" target="_blank">VIEW WORK</a>
                             </div>
                         </div>`;
                 });
         
-                container.innerHTML = html || "<p style='text-align:center; grid-column:1/-1;'>No active DJs found.</p>";
-            } catch (e) {
-                container.innerHTML = "<p>Error loading data.</p>";
+                container.innerHTML = html;
+            } catch (error) {
+                console.error("Connection Error:", error);
+                container.innerHTML = "<p style='text-align:center; grid-column:1/-1;'>Error connecting to the roster. Please check API permissions.</p>";
             }
         }
+        
+        function fixDriveUrl(url) {
+            if (!url || !url.includes('drive.google.com')) return 'rooradio.jpg';
+            const id = url.split('/d/')[1]?.split('/')[0] || url.split('id=')[1]?.split('&')[0];
+            return `https://drive.google.com/uc?export=view&id=${id}`;
+        }
+        
         loadTeam();
 </script>
 </body>
