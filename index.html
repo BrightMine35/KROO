@@ -91,35 +91,41 @@
 
     <script>
         // --- FIXED TAB LOGIC ---
-        function openTab(evt, tabName) {
-            const contents = document.getElementsByClassName("tab-content");
-            const links = document.getElementsByClassName("tab-link");
-
-            // Hide all tabs and PAUSE iframes to save bandwidth
-            for (let content of contents) {
-                content.style.display = "none";
-                let iframes = content.getElementsByTagName('iframe');
-                for (let f of iframes) {
-                    if (!f.hasAttribute('data-src')) f.setAttribute('data-src', f.src);
-                    f.src = ''; // Effectively stops the video/loading
+            function openTab(evt, tabName) {
+                const contents = document.getElementsByClassName("tab-content");
+                const links = document.getElementsByClassName("tab-link");
+            
+                // 1. Hide everything and "Mute" the iframes
+                for (let content of contents) {
+                    content.style.display = "none";
+                    let iframes = content.querySelectorAll('iframe'); // Use querySelectorAll for better reach
+                    iframes.forEach(f => {
+                        // Save the source before clearing it
+                        if (!f.getAttribute('data-src')) {
+                            f.setAttribute('data-src', f.src);
+                        }
+                        f.src = ''; 
+                    });
                 }
+            
+                // 2. Reset the buttons
+                for (let link of links) {
+                    link.classList.remove("active");
+                }
+            
+                // 3. Show the target tab and "Re-activate" ALL its videos
+                const activeTab = document.getElementById(tabName);
+                activeTab.style.display = "block";
+                
+                let activeIframes = activeTab.querySelectorAll('iframe');
+                activeIframes.forEach(f => {
+                    if (f.getAttribute('data-src')) {
+                        f.src = f.getAttribute('data-src');
+                    }
+                });
+            
+                evt.currentTarget.classList.add("active");
             }
-
-            // Remove active class from buttons
-            for (let link of links) {
-                link.classList.remove("active");
-            }
-
-            // Show current tab and RE-LOAD its iframes
-            const activeTab = document.getElementById(tabName);
-            activeTab.style.display = "block";
-            let activeIframes = activeTab.getElementsByTagName('iframe');
-            for (let f of activeIframes) {
-                if (f.hasAttribute('data-src')) f.src = f.getAttribute('data-src');
-            }
-
-            evt.currentTarget.classList.add("active");
-        }
 
         // --- SMART METADATA WITH FALLBACK ---
         async function updateMetadata() {
