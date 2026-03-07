@@ -4,8 +4,7 @@ Static site for **K-ROO Student Radio** at the University of Missouri–Kansas C
 
 ## 🛠 Deployment
 
-This repo is linked to [Porkbun Static Hosting](https://porkbun.com) for automatic deployment to:
-
+Domain from porkbun
 👉 https://k-roo.digital
 
 When you push to `main`, Porkbun publishes changes automatically.
