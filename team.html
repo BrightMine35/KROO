@@ -8,93 +8,100 @@
         body { font-family: sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
         header { background: #0033A0; color: white; padding: 30px; text-align: center; }
         .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding: 40px; max-width: 1200px; margin: 0 auto; }
-        .dj-card { background: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden; text-align: center; padding-bottom: 20px; }
-        .dj-photo { width: 100%; height: 250px; object-fit: cover; }
-        .dj-name { color: #0033A0; margin: 15px 0 5px; text-transform: uppercase; }
-        .dj-bio { padding: 0 15px; color: #555; font-size: 0.9em; min-height: 60px; }
-        .playlist-btn { display: inline-block; margin-top: 15px; padding: 10px 20px; background: #FFDD00; color: #0033A0; text-decoration: none; font-weight: bold; border-radius: 5px; }
+        .dj-card { background: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden; text-align: center; padding-bottom: 20px; display: flex; flex-direction: column; }
+        .dj-photo { width: 100%; height: 280px; object-fit: cover; background: #0033A0; }
+        .dj-name { color: #0033A0; margin: 15px 0 5px; text-transform: uppercase; font-size: 1.4em; }
+        .dj-bio { padding: 0 15px; color: #555; font-size: 0.9em; flex-grow: 1; margin-bottom: 15px; }
+        .playlist-btn { display: inline-block; align-self: center; padding: 10px 20px; background: #FFDD00; color: #0033A0; text-decoration: none; font-weight: bold; border-radius: 5px; transition: transform 0.2s; }
+        .playlist-btn:hover { transform: scale(1.05); }
     </style>
 </head>
 <body>
 
 <header>
     <h1>MEET THE CREW</h1>
-    <a href="index.html" style="color:white; text-decoration:none;">← Back</a>
+    <a href="index.html" style="color:white; text-decoration:none;">← Back to Home</a>
 </header>
 
 <div class="team-grid" id="team-container">
-    <p style="text-align:center; grid-column: 1/-1;">Loading the roster...</p>
+    <p style="text-align:center; grid-column: 1/-1;">Connecting to K-ROO database...</p>
 </div>
 
 <script>
-    function fixDriveUrl(url) {
-        if (!url || url.length < 10) return 'rooradio.jpg';
-        if (url.includes('drive.google.com')) {
-            const id = url.split('/d/')[1]?.split('/')[0] || url.split('id=')[1]?.split('&')[0];
-            return `https://drive.google.com/uc?export=view&id=${id}`;
-        }
-        return url;
-    }
-        
-            // UPDATED WITH YOUR CREDENTIALS
-const SHEET_ID = '1Ml20oT7hC5kmeQtZrKyWdqiLQ67JzDzkD0aeLxi-zts'; 
-const API_KEY = 'AIzaSyAguGyfJE9dOZGfVpipfe7Hwui8CYQERF8'; 
-const RANGE = 'Form Responses 1!A2:G100'; // Change "Form Responses 1" to your tab name if different
+    // 1. YOUR API CREDENTIALS
+    const SHEET_ID = '1Ml20oT7hC5kmeQtZrKyWdqiLQ67JzDzkD0aeLxi-zts'; 
+    const API_KEY = 'AIzaSyAguGyfJE9dOZGfVpipfe7Hwui8CYQERF8'; 
+    const RANGE = 'Form Responses 1!A2:H100'; // Increased to H to include Status if needed
 
-        async function loadTeam() {
-            const container = document.getElementById('team-container');
-            // Using the Google Sheets API v4 URL
-            const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
-        
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                const rows = data.values;
-        
-                if (!rows || rows.length === 0) {
-                    container.innerHTML = "<p style='text-align:center; grid-column:1/-1;'>No crew members found in the sheet.</p>";
-                    return;
-                }
-        
-                let html = '';
-                rows.forEach(row => {
-                    // Mapping based on standard Google Form export:
-                    // [0] Timestamp, [1] Name, [2] Bio, [3] Photo URL, [6] Work Link
-                    const name = row[1];      
-                    const bio = row[2] || "No bio provided.";       
-                    const imgUrl = row[3];    
-                    const workLink = row[6] || "#"; 
-        
-                    // Skip empty rows or header leftovers
-                    if (!name || name === "Name" || name.includes('http')) return;
-        
-                    const fixedImg = fixDriveUrl(imgUrl);
-        
-                    html += `
-                        <div class="dj-card">
-                            <img src="${fixedImg}" class="dj-photo" onerror="this.src='rooradio.jpg'">
-                            <div class="dj-info">
-                                <h2 class="dj-name">${name}</h2>
-                                <p class="dj-bio">${bio}</p>
-                                <a href="${workLink}" class="playlist-btn" target="_blank">VIEW WORK</a>
-                            </div>
-                        </div>`;
-                });
-        
-                container.innerHTML = html;
-            } catch (error) {
-                console.error("Connection Error:", error);
-                container.innerHTML = "<p style='text-align:center; grid-column:1/-1;'>Error connecting to the roster. Please check API permissions.</p>";
+    // 2. SMART IMAGE FETCHER
+    function fixDriveUrl(url) {
+        if (!url || url.trim() === "") return 'rooradio.jpg';
+        url = url.trim();
+
+        // Handle Google Drive Links
+        if (url.includes('drive.google.com')) {
+            let fileId = '';
+            if (url.includes('/d/')) {
+                fileId = url.split('/d/')[1]?.split('/')[0]?.split('?')[0];
+            } else if (url.includes('id=')) {
+                fileId = url.split('id=')[1]?.split('&')[0];
             }
+            if (fileId) return `https://drive.google.com/uc?export=view&id=${fileId}`;
         }
         
-        function fixDriveUrl(url) {
-            if (!url || !url.includes('drive.google.com')) return 'rooradio.jpg';
-            const id = url.split('/d/')[1]?.split('/')[0] || url.split('id=')[1]?.split('&')[0];
-            return `https://drive.google.com/uc?export=view&id=${id}`;
+        // If it's a normal direct link (Imgur, etc.), just return it
+        if (url.length > 10) return url;
+
+        return 'rooradio.jpg';
+    }
+
+    async function loadTeam() {
+        const container = document.getElementById('team-container');
+        const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
+    
+        try {
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+            const rows = data.values;
+    
+            if (!rows || rows.length === 0) {
+                container.innerHTML = "<p style='text-align:center; grid-column:1/-1;'>The DJ roster is currently empty.</p>";
+                return;
+            }
+    
+            let html = '';
+            rows.forEach(row => {
+                // MAPPING: [0]Timestamp, [1]Name, [2]Bio, [3]Photo, [6]Work Link, [7]Status
+                const name = row[1]?.trim();     
+                const bio = row[2] || "No bio provided.";       
+                const imgUrl = row[3];    
+                const workLink = row[6] || "#"; 
+                const status = row[7]?.toLowerCase() || ""; 
+
+                // Skip logic: empty names, header leftovers, or Inactive status
+                if (!name || name === "Name" || status.includes('inactive')) return;
+    
+                const fixedImg = fixDriveUrl(imgUrl);
+    
+                html += `
+                    <div class="dj-card">
+                        <img src="${fixedImg}" class="dj-photo" alt="${name}" onerror="this.src='rooradio.jpg'">
+                        <div class="dj-info">
+                            <h2 class="dj-name">${name}</h2>
+                            <p class="dj-bio">${bio}</p>
+                            <a href="${workLink}" class="playlist-btn" target="_blank">VIEW WORK</a>
+                        </div>
+                    </div>`;
+            });
+    
+            container.innerHTML = html || "<p style='text-align:center; grid-column:1/-1;'>No active DJs found.</p>";
+        } catch (error) {
+            console.error("Connection Error:", error);
+            container.innerHTML = "<p style='text-align:center; grid-column:1/-1;'>Error connecting to station database.</p>";
         }
-        
-        loadTeam();
+    }
+    
+    loadTeam();
 </script>
 </body>
 </html>
