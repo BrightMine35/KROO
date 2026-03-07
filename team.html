@@ -35,22 +35,29 @@
 
     // 2. SMART IMAGE FETCHER
     function fixDriveUrl(url) {
-
-        // Handle Google Drive Links
-        if (url.includes('drive.google.com')) {
-            let fileId = '';
-            if (url.includes('/d/')) {
-                fileId = url.split('/d/')[1]?.split('/')[0]?.split('?')[0];
-            } else if (url.includes('id=')) {
-                fileId = url.split('id=')[1]?.split('&')[0];
-            }
-            if (fileId) return `https://drive.google.com/uc?export=view&id=${fileId}`;
-        }
+            if (!url || url.trim() === "" || url === "#") return ''; 
+            url = url.trim();
         
-        // If it's a normal direct link (Imgur, etc.), just return it
-        if (url.length > 10) return url;
-;
-    }
+            if (url.includes('drive.google.com')) {
+                let fileId = '';
+                
+                // Extract ID from any Google Drive link format
+                if (url.includes('/d/')) {
+                    fileId = url.split('/d/')[1]?.split('/')[0];
+                } else if (url.includes('id=')) {
+                    fileId = url.split('id=')[1]?.split('&')[0];
+                }
+        
+                if (fileId) {
+                    // Using the Thumbnail URL with =s1000 (size 1000px) 
+                    // is 10x more reliable for direct embedding than the 'uc' link.
+                    return `https://lh3.googleusercontent.com/u/0/d/${fileId}=s1000`;
+                }
+            }
+            
+            // Return the original URL if it's already a direct link (Imgur/Postimages)
+            return url.length > 10 ? url : '';
+        }
 
     async function loadTeam() {
         const container = document.getElementById('team-container');
