@@ -43,7 +43,7 @@
             const container = document.getElementById('team-container');
         
             function fixDriveUrl(url) {
-                if (!url || url === "#" || url.trim() === "") return 'rooradio.jpg';
+                if (!url || url.trim() === "" || url === "#") return 'rooradio.jpg';
                 url = url.trim().replace(/"/g, '');
                 if (url.includes('drive.google.com')) {
                     let fileId = '';
@@ -55,26 +55,32 @@
             }
         
             try {
-                const res = await fetch(CSV_URL);
+                // We add a timestamp to the URL to force Google to give us fresh data (Bypass Cache)
+                const res = await fetch(`${CSV_URL}&cachebust=${Date.now()}`);
                 const csvData = await res.text();
                 
-                // Split by lines and ignore the header
-                const allRows = csvData.split(/\r?\n/).slice(1).filter(r => r.trim() !== '');
+                // Split rows
+                const allRows = csvData.split(/\r?\n/).filter(r => r.trim() !== '');
                 const djMap = new Map();
         
-                allRows.forEach(row => {
-                    try {
-                        // This new split is much more stable for Google Sheets CSVs
-                        const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                allRows.forEach((row, index) => {
+                    // Skip the very first row (Headers)
+                    if (index === 0) return;
+        
+                    // Robust CSV split
+                    const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                    
+                    if (cols && cols.length >= 2) {
+                        const name = cols[1]?.replace(/"/g, '').trim();
                         
-                        if (cols && cols.length >= 2) {
-                            const name = cols[1].replace(/"/g, '').trim();
-                            // Skip if the status (Column H / Index 7) is Inactive
-                            if (cols[7] && cols[7].toLowerCase().includes("inactive")) return;
-                            
-                            djMap.set(name, cols); 
-                        }
-                    } catch (err) { console.error("Row Error:", err); }
+                        // DATA CLEANING: If the name is "Helvetica" or empty, skip it
+                        if (!name || name.toLowerCase().includes("helvetica") || name === "0") return;
+        
+                        // Check Column H (Index 7) for "Inactive"
+                        if (cols[7] && cols[7].toLowerCase().includes("inactive")) return;
+                        
+                        djMap.set(name, cols); 
+                    }
                 });
         
                 let html = '';
@@ -98,7 +104,7 @@
                 container.innerHTML = html || "<p style='text-align:center;'>No active DJs found.</p>";
             } catch (e) {
                 console.error("Critical Load Error:", e);
-                container.innerHTML = "<p style='text-align:center;'>Error loading the crew. Please check your CSV link.</p>";
+                container.innerHTML = "<p style='text-align:center;'>Error loading the crew. Please check your network.</p>";
             }
         }
         loadTeam();
