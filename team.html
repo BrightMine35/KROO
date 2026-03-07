@@ -1,1 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meet the Crew | K-ROO Radio</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; padding: 40px 20px; }
+        .dj-card { background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; transition: 0.3s; text-align: center; border: 1px solid #eee; }
+        .dj-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+        .dj-photo { width: 100%; height: 250px; object-fit: cover; background: #0033A0; }
+        .dj-info { padding: 20px; }
+        .dj-name { color: #0033A0; font-size: 1.5em; margin: 0 0 10px 0; text-transform: uppercase; }
+        .dj-bio { color: #666; font-size: 0.9em; line-height: 1.6; min-height: 80px; }
+        .playlist-btn { display: inline-block; margin-top: 15px; padding: 10px 20px; background: #FFDD00; color: #0033A0; text-decoration: none; font-weight: bold; border-radius: 5px; font-size: 0.8em; }
+    </style>
+</head>
+<body style="background: #f9f9f9;">
 
+    <header style="background: #0033A0; color: white; padding: 40px 20px; text-align: center;">
+        <h1 style="color: #FFDD00; margin: 0;">MEET THE CREW</h1>
+        <p>The voices behind the station.</p>
+        <a href="index.html" style="color: white; text-decoration: none; font-size: 0.8em; opacity: 0.8;">← Back to Radio</a>
+    </header>
+
+    <div class="team-grid" id="team-container">
+        <p style="text-align: center; grid-column: 1/-1;">Recruiting the talent... hang tight.</p>
+    </div>
+
+    <script>
+        async function loadTeam() {
+            // PASTE YOUR PUBLISHED CSV URL BELOW
+            const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTUaJ9SHaOPSloQTjP-ZM9kcLpOoFXQAHdI6950BxrwJ9QB-F18cy1uETqJWMsnuDQTGwhw4p8RSNKO/pub?gid=1056346171&single=true&output=csv';
+            
+            try {
+                const res = await fetch(CSV_URL);
+                const data = await res.text();
+                // Split by line, skip header, filter out empty rows
+                const rows = data.split('\n').slice(1).filter(row => row.trim() !== '');
+
+                let html = '';
+                rows.forEach(row => {
+                    // This handles basic CSV split (assumes no commas in bios for now)
+                    const cols = row.split(','); 
+                    // Adjust indices based on your Form order: 
+                    // [0] Timestamp, [1] DJ Name, [2] Bio, [3] Image Link, [4] Playlist
+                    const name = cols[1];
+                    const bio = cols[2];
+                    const img = cols[3] || 'placeholder.jpg';
+                    const playlist = cols[4] || '#';
+
+                    html += `
+                        <div class="dj-card">
+                            <img src="${img}" class="dj-photo" onerror="this.src='rooradio.jpg'">
+                            <div class="dj-info">
+                                <h2 class="dj-name">${name}</h2>
+                                <p class="dj-bio">${bio}</p>
+                                <a href="${playlist}" class="playlist-btn">LISTEN TO PLAYLIST</a>
+                            </div>
+                        </div>
+                    `;
+                });
+                document.getElementById('team-container').innerHTML = html;
+            } catch (e) {
+                console.error("Team Load Error:", e);
+            }
+        }
+        loadTeam();
+    </script>
+</body>
+</html>
