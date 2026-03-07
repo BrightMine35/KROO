@@ -68,21 +68,19 @@
     
             let html = '';
             rows.forEach(row => {
-                // MAPPING: [0]Timestamp, [1]Name, [2]Bio, [3]Photo, [6]Work Link, [7]Status
                 const name = row[1]?.trim();     
                 const bio = row[2] || "No bio provided.";       
                 const imgUrl = row[3];    
                 const workLink = row[6] || "#"; 
                 const status = row[7]?.toLowerCase() || ""; 
-
-                // Skip logic: empty names, header leftovers, or Inactive status
+            
                 if (!name || name === "Name" || status.includes('inactive')) return;
-    
+            
                 const fixedImg = fixDriveUrl(imgUrl);
-    
+            
                 html += `
                     <div class="dj-card">
-                        <img src="${fixedImg}" class="dj-photo" alt="${name}" onerror="this.src='rooradio.jpg'">
+                        ${fixedImg ? `<img src="${fixedImg}" class="dj-photo" alt="${name}">` : ''}
                         <div class="dj-info">
                             <h2 class="dj-name">${name}</h2>
                             <p class="dj-bio">${bio}</p>
