@@ -34,21 +34,26 @@
         const RANGE = 'Form Responses 1!A2:H100'; 
         
         // 2. THE REPAIRED IMAGE FETCHER
-        function fixDriveUrl(url) {
-            // If there is no URL, return null so the Blue Box shows
-            if (!url || url.length < 10) return null;
+       function fixDriveUrl(url) {
+            if (!url || url.length < 10) return ''; 
+            url = url.trim();
         
             if (url.includes('drive.google.com')) {
-                // Extract the ID safely
-                const id = url.split('/d/')[1]?.split('/')[0] || url.split('id=')[1]?.split('&')[0];
+                // This splits by /d/ and then grabs the ID before the next slash or question mark
+                const parts = url.split('/d/');
+                if (parts.length > 1) {
+                    const id = parts[1].split('/')[0].split('?')[0];
+                    // The magic happens here: ${id} correctly inserts the string
+                    return `https://lh3.googleusercontent.com/d/${id}=s1000`;
+                }
                 
-                // FIXED SYNTAX: Added the $ sign and used the lh3 subdomain
-                if (id) {
-                    return `https://lh3.googleusercontent.com/u/0/d/${id}=s1000`;
+                // Handle the older ?id= style links
+                if (url.includes('id=')) {
+                    const id = url.split('id=')[1].split('&')[0];
+                    return `https://lh3.googleusercontent.com/d/${id}=s1000`;
                 }
             }
-            // Return direct links (Imgur, etc.) as they are
-            return url;
+            return url; // Return as-is if it's Imgur or another direct link
         }
         
         async function loadTeam() {
