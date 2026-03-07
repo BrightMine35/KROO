@@ -45,13 +45,31 @@
             const container = document.getElementById('team-container');
         
             function fixDriveUrl(url) {
-                if (url && url.includes('drive.google.com')) {
-                    // Extracts the ID from the share link
-                    const fileId = url.split('/d/')[1]?.split('/')[0] || url.split('id=')[1]?.split('&')[0];
-                    // Uses the direct image bypass link
-                    return `https://lh3.googleusercontent.com/u/0/d/${fileId}`; 
+                if (!url || url === "#") return 'rooradio.jpg';
+                
+                // Clean the URL of any whitespace or quotes
+                url = url.trim().replace(/"/g, '');
+            
+                if (url.includes('drive.google.com')) {
+                    let fileId = '';
+                    
+                    // Handle /file/d/ID/view style
+                    if (url.includes('/d/')) {
+                        fileId = url.split('/d/')[1]?.split('/')[0]?.split('?')[0];
+                    } 
+                    // Handle ?id=ID style
+                    else if (url.includes('id=')) {
+                        fileId = url.split('id=')[1]?.split('&')[0];
+                    }
+            
+                    if (fileId) {
+                        // Using the 'uc' (user content) export link is the most reliable for raw files
+                        return `https://drive.google.com/uc?export=view&id=${fileId}`;
+                    }
                 }
-                return url;
+                
+                return url; // If it's already a direct link (Imgur/Postimages), just return it
+            }
             }
         
             try {
