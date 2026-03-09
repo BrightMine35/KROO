@@ -157,22 +157,30 @@
         // --- REST OF THE LOGIC ---
         async function updateMetadata() {
             const el = document.getElementById('track-info');
-            // We wrap your Beast URL in the AllOrigins proxy to satisfy HTTPS requirements
-            const beastUrl = 'http://164.152.16.132/api/nowplaying/k-roo_radio';
-            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(beastUrl)}`;
+    
+            // 1. Your raw Oracle server URL
+            const rawUrl = 'http://164.152.16.132/api/nowplaying/k-roo_radio';
             
+            // 2. Wrap it in a proxy to bypass GitHub's HTTPS/Mixed-Content block
+            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(rawUrl)}`;
+        
             try {
                 const res = await fetch(proxyUrl);
+                if (!res.ok) throw new Error('Network response was not ok');
+                
                 const data = await res.json();
                 
-                if (data?.now_playing) { 
-                    el.innerText = data.now_playing.song.text; 
-                    return; 
+                // If data exists, inject it and exit
+                if (data && data.now_playing) {
+                    el.innerText = data.now_playing.song.text;
+                    console.log("Success! Currently Playing:", data.now_playing.song.text);
+                    return;
                 }
-            } catch (e) { 
-                console.warn("Metadata failed even with proxy. Check if Beast is reachable."); 
+            } catch (error) {
+                console.error("METADATA ERROR:", error);
+                // Fallback text if the Beast is unreachable
+                el.innerText = "K-ROO Auto-DJ Active";
             }
-            el.innerText = "K-ROO Auto-DJ Active";
         }
 
         async function fetchSchedule() {
