@@ -48,18 +48,18 @@
     <main style="max-width: 1000px; margin: 0 auto;">
 
         <section id="Live" class="tab-content active">
-            <h2 class="show-label" style="border-left-color: #cc0000;">Live from the Booth</h2>
-            <div class="video-wrapper">
-                <iframe id="live-player" src="" frameborder="0" allowfullscreen></iframe>
-            </div>
-            
-            <div style="margin-top: 25px; padding: 20px; background: #f0f4f8; border-radius: 15px; text-align: center;">
-                <div style="margin-bottom: 15px; font-family: monospace; font-size: 1.1em; color: #0033A0;">
-                    <strong>[NOW PLAYING]:</strong> <span id="track-info">Connecting to Cloud Station...</span>
+            <div style="margin-bottom: 25px; padding: 25px; background: #0033A0; border-radius: 15px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <div style="margin-bottom: 15px; font-family: monospace; font-size: 1.1em; color: #FFDD00;">
+                    <strong style="color: white;">[NOW PLAYING]:</strong> <span id="track-info">Connecting to Cloud Station...</span>
                 </div>
-                <audio controls style="width: 100%;">
+                <audio controls style="width: 100%; border-radius: 8px;">
                     <source src="http://164.152.16.132:8000/live" type="audio/mpeg">
                 </audio>
+            </div>
+
+            <h2 class="show-label" style="border-left-color: #cc0000;">Visual Broadcast</h2>
+            <div class="video-wrapper">
+                <iframe id="live-player" src="" frameborder="0" allowfullscreen></iframe>
             </div>
         </section>
 
@@ -67,13 +67,13 @@
             <div class="show-section">
                 <h2 class="show-label">Slated Podcasts</h2>
                 <div class="video-wrapper">
-                    <iframe src="" data-src="https://www.youtube.com/embed/videoseries?list=PL6iSD_biiywPQKJ6-AS8adaXZsSymCl2v" frameborder="0" allowfullscreen></iframe>
+                    <iframe src="" data-src="https://www.youtube.com/embed/videoseries?list=PL6iSD_biiywPQKJ6-AS8adaXZsSymCl2v&mute=1" frameborder="0" allowfullscreen></iframe>
                 </div>
             </div>
             <div class="show-section">
                 <h2 class="show-label">Tweaker Tunes</h2>
                 <div class="video-wrapper">
-                    <iframe src="" data-src="https://www.youtube.com/embed/videoseries?list=PL6iSD_biiywNa-PFdaHwVGfuMVl70z_bU" frameborder="0" allowfullscreen></iframe>
+                    <iframe src="" data-src="https://www.youtube.com/embed/videoseries?list=PL6iSD_biiywNa-PFdaHwVGfuMVl70z_bU&mute=1" frameborder="0" allowfullscreen></iframe>
                 </div>
             </div>
         </section>
@@ -107,6 +107,7 @@
 
         async function checkLiveStatus() {
             const player = document.getElementById('live-player');
+            // Added &mute=1 to auto-mute the visual broadcast
             const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&type=video&eventType=live&key=${API_KEY}`;
 
             try {
@@ -114,16 +115,13 @@
                 const data = await res.json();
 
                 if (data.items && data.items.length > 0) {
-                    // WE ARE LIVE: Grab the specific Video ID of the stream
                     const videoId = data.items[0].id.videoId;
-                    player.src = `https://www.youtube.com/embed/${videoId}?autoplay=0`;
+                    player.src = `https://www.youtube.com/embed/${videoId}?autoplay=0&mute=1`;
                 } else {
-                    // NOT LIVE: Load the fallback playlist
-                    player.src = `https://www.youtube.com/embed/videoseries?list=${PLAYLIST_ID}`;
+                    player.src = `https://www.youtube.com/embed/videoseries?list=${PLAYLIST_ID}&mute=1`;
                 }
             } catch (e) {
-                // FAILSAFE: If the API fails or quota is hit, show the playlist
-                player.src = `https://www.youtube.com/embed/videoseries?list=${PLAYLIST_ID}`;
+                player.src = `https://www.youtube.com/embed/videoseries?list=${PLAYLIST_ID}&mute=1`;
             }
         }
 
@@ -146,17 +144,16 @@
             const activeTab = document.getElementById(tabName);
             activeTab.style.display = "block";
             
-            // Re-activate iframes
             let activeIframes = activeTab.querySelectorAll('iframe');
             activeIframes.forEach(f => {
-                if (f.id === 'live-player') { checkLiveStatus(); } // Refresh live check when tab opens
+                if (f.id === 'live-player') { checkLiveStatus(); } 
                 else if (f.getAttribute('data-src')) { f.src = f.getAttribute('data-src'); }
             });
 
             evt.currentTarget.classList.add("active");
         }
 
-        // --- REST OF THE LOGIC (Metadata/Schedule) ---
+        // --- REST OF THE LOGIC ---
         async function updateMetadata() {
             const el = document.getElementById('track-info');
             try {
@@ -194,7 +191,6 @@
             } catch (e) { console.error("Schedule Error", e); }
         }
 
-        // Initial Load
         checkLiveStatus();
         fetchSchedule();
         updateMetadata();
