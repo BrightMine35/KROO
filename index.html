@@ -157,15 +157,21 @@
         // --- REST OF THE LOGIC ---
         async function updateMetadata() {
             const el = document.getElementById('track-info');
+            // We wrap your Beast URL in the AllOrigins proxy to satisfy HTTPS requirements
+            const beastUrl = 'http://164.152.16.132/api/nowplaying/k-roo_radio';
+            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(beastUrl)}`;
+            
             try {
-                // Updated path: k-roo_radio
-                const res = await fetch('http://164.152.16.132/api/nowplaying/k-roo_radio');
+                const res = await fetch(proxyUrl);
                 const data = await res.json();
+                
                 if (data?.now_playing) { 
                     el.innerText = data.now_playing.song.text; 
                     return; 
                 }
-            } catch (e) { console.warn("Cloud offline"); }
+            } catch (e) { 
+                console.warn("Metadata failed even with proxy. Check if Beast is reachable."); 
+            }
             el.innerText = "K-ROO Auto-DJ Active";
         }
 
