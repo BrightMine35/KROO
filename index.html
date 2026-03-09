@@ -53,7 +53,7 @@
                     <strong style="color: white;">[NOW PLAYING]:</strong> <span id="track-info">Connecting to Cloud Station...</span>
                 </div>
                 <audio controls style="width: 100%; border-radius: 8px;">
-                    <source src="http://164.152.16.132:8000/live" type="audio/mpeg">
+                    <source src="http://164.152.16.132/listen/k-roo_radio/live" type="audio/mpeg">
                 </audio>
             </div>
 
@@ -158,9 +158,13 @@
         async function updateMetadata() {
             const el = document.getElementById('track-info');
             try {
-                const res = await fetch('http://164.152.16.132/api/nowplaying/kroo');
+                // Updated path: k-roo_radio
+                const res = await fetch('http://164.152.16.132/api/nowplaying/k-roo_radio');
                 const data = await res.json();
-                if (data?.now_playing) { el.innerText = data.now_playing.song.text; return; }
+                if (data?.now_playing) { 
+                    el.innerText = data.now_playing.song.text; 
+                    return; 
+                }
             } catch (e) { console.warn("Cloud offline"); }
             el.innerText = "K-ROO Auto-DJ Active";
         }
