@@ -7,26 +7,16 @@
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="favicon.PNG">
     <style>
-        /* TAB SYSTEM */
+        /* Modern Navigation */
         .tab-container { display: flex; justify-content: center; background: #0033A0; padding: 10px 0; position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid #FFDD00; }
-        .tab-link { color: white; padding: 12px 20px; text-decoration: none; font-weight: bold; cursor: pointer; transition: 0.3s; border-radius: 5px; margin: 0 5px; font-size: 0.9em; }
+        .tab-link { color: white; padding: 12px 20px; text-decoration: none; font-weight: bold; transition: 0.3s; border-radius: 5px; margin: 0 5px; font-size: 0.9em; }
         .tab-link:hover { background: rgba(255, 221, 0, 0.2); }
         .tab-link.active { background: #FFDD00; color: #0033A0; }
-        .tab-content { display: none; padding: 30px 20px; animation: fadeIn 0.4s; }
-        .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* VIDEO STYLING */
-        .show-section { margin-bottom: 50px; }
+        /* Live Content Styling */
         .show-label { color: #0033A0; border-left: 5px solid #FFDD00; padding-left: 15px; margin-bottom: 15px; text-transform: uppercase; font-size: 1.4em; }
         .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); background: #000; }
         .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-
-        #schedule-container { width: 100%; overflow-x: auto; margin: 20px 0; border: 1px solid #ddd; border-radius: 8px; }
-        .schedule-table { width: 100%; border-collapse: collapse; min-width: 900px; table-layout: fixed; }
-        .schedule-table th, .schedule-table td { padding: 15px 10px; border: 1px solid #eee; text-align: left; vertical-align: top; font-size: 0.85em; }
-        .schedule-table th { background-color: #0033A0; color: white; text-transform: uppercase; text-align: center; }
-        .schedule-table td:first-child { font-weight: bold; color: #0033A0; background: #fcfcfc; width: 90px; text-align: center; }
     </style>
 </head>
 <body>
@@ -42,79 +32,43 @@
         <a href="index.html" class="tab-link active">K-ROO LIVE</a>
         <a href="archives.html" class="tab-link">WIP / ARCHIVES</a>
         <a href="about.html" class="tab-link">ABOUT & SCHEDULE</a>
+        <a href="reservations.html" class="tab-link">RESERVATIONS</a>
         <a href="cafe.html" class="tab-link">THE CAFE</a>
     </nav>
 
-    <main style="max-width: 1000px; margin: 0 auto;">
+    <main style="max-width: 1000px; margin: 0 auto; padding: 30px 20px;">
 
-        <section id="Live" class="tab-content active">
-            <div style="margin-bottom: 25px; padding: 25px; background: #0033A0; border-radius: 15px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                <div style="margin-bottom: 15px; font-family: monospace; font-size: 1.1em; color: #FFDD00;">
-                    <strong style="color: white;">[NOW PLAYING]:</strong> <span id="track-info">Connecting to Cloud Station...</span>
-                </div>
-                <audio controls style="width: 100%; border-radius: 8px;">
-                    <source src="http://164.152.16.132/radio/8000/radio.mp3" type="audio/mpeg">
-                </audio>
+        <section style="margin-bottom: 25px; padding: 25px; background: #0033A0; border-radius: 15px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <div style="margin-bottom: 15px; font-family: monospace; font-size: 1.1em; color: #FFDD00;">
+                <strong style="color: white;">[NOW PLAYING]:</strong> <span id="track-info">Connecting to Cloud Station...</span>
             </div>
-
-            <h2 class="show-label" style="border-left-color: #cc0000;">Visual Broadcast</h2>
-            <div class="video-wrapper">
-                <iframe id="live-player" src="" frameborder="0" allowfullscreen></iframe>
-            </div>
+            <audio controls style="width: 100%; border-radius: 8px;">
+                <source src="http://164.152.16.132/listen/k-roo_radio/live" type="audio/mpeg">
+            </audio>
         </section>
 
-        <section id="Archives" class="tab-content">
-            <div class="show-section">
-                <h2 class="show-label">Slated Podcasts</h2>
-                <div class="video-wrapper">
-                    <iframe src="" data-src="https://www.youtube.com/embed/videoseries?list=PL6iSD_biiywPQKJ6-AS8adaXZsSymCl2v&mute=1" frameborder="0" allowfullscreen></iframe>
-                </div>
-            </div>
-            <div class="show-section">
-                <h2 class="show-label">Auto-DJ playlist 1 / tweaker tunes </h2>
-                <div class="video-wrapper">
-                    <iframe src="" data-src="https://www.youtube.com/embed/videoseries?list=PL6iSD_biiywNa-PFdaHwVGfuMVl70z_bU&mute=1" frameborder="0" allowfullscreen></iframe>
-                </div>
-            </div>
-        </section>
-
-        <section id="About" class="tab-content">
-            <div style="text-align: center; margin-bottom: 30px; display: flex; justify-content: center; gap: 15px;">
-                 <a href="team.html" class="tab-link" style="background: #0033A0;">MEET THE CREW</a>
-                 <a href="reservations.html" class="tab-link" style="background: #cc0000;">ROOM RESERVATIONS</a>
-            </div>
-            <h2 class="show-label">Weekly Schedule</h2>
-            <div id="schedule-container">
-                <table class="schedule-table" id="schedule-table">
-                    <thead><tr><th>Loading Schedule...</th></tr></thead>
-                </table>
-            </div>
-        </section>
-
-        <section id="Cafe" class="tab-content">
-            <div style="padding: 100px 20px; text-align: center; background: #eee; border-radius: 12px; border: 2px dashed #0033A0;">
-                <h2 style="color: #0033A0;">THE CAFE</h2>
-                <p style="font-style: italic; font-size: 1.2em;">Local livestreamed chatroom for all UMKC students coming soon.</p>
-            </div>
-        </section>
+        <h2 class="show-label" style="border-left-color: #cc0000;">Visual Broadcast</h2>
+        <div class="video-wrapper">
+            <iframe id="live-player" src="" frameborder="0" allowfullscreen></iframe>
+        </div>
 
     </main>
 
     <script>
-        // --- THE AUTO-SWITCHER ---
+        // --- CONFIG ---
         const CHANNEL_ID = 'UCWx5sR1VIkTLJ3BI3ZvQibQ';
         const API_KEY = 'AIzaSyDOH6T3RmKWb3MmTFZl21d-NPjvkpKp680';
         const PLAYLIST_ID = 'PL1FttfnMOMng-aI9SzkpxDvhTsgovPFAD';
+        const METADATA_URL = 'http://164.152.16.132/api/nowplaying/k-roo_radio';
 
+        // --- YOUTUBE LIVE CHECK ---
         async function checkLiveStatus() {
             const player = document.getElementById('live-player');
-            // Added &mute=1 to auto-mute the visual broadcast
             const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&type=video&eventType=live&key=${API_KEY}`;
 
             try {
                 const res = await fetch(url);
                 const data = await res.json();
-
                 if (data.items && data.items.length > 0) {
                     const videoId = data.items[0].id.videoId;
                     player.src = `https://www.youtube.com/embed/${videoId}?autoplay=0&mute=1`;
@@ -126,92 +80,25 @@
             }
         }
 
-        // --- TAB LOGIC ---
-        function openTab(evt, tabName) {
-            const contents = document.getElementsByClassName("tab-content");
-            const links = document.getElementsByClassName("tab-link");
-
-            for (let content of contents) {
-                content.style.display = "none";
-                let iframes = content.querySelectorAll('iframe');
-                iframes.forEach(f => {
-                    if (!f.getAttribute('data-src')) f.setAttribute('data-src', f.src);
-                    f.src = ''; 
-                });
-            }
-
-            for (let link of links) { link.classList.remove("active"); }
-
-            const activeTab = document.getElementById(tabName);
-            activeTab.style.display = "block";
-            
-            let activeIframes = activeTab.querySelectorAll('iframe');
-            activeIframes.forEach(f => {
-                if (f.id === 'live-player') { checkLiveStatus(); } 
-                else if (f.getAttribute('data-src')) { f.src = f.getAttribute('data-src'); }
-            });
-
-            evt.currentTarget.classList.add("active");
-        }
-
-        // --- REST OF THE LOGIC ---
+        // --- METADATA UPDATE ---
         async function updateMetadata() {
             const el = document.getElementById('track-info');
-    
-            // 1. Your raw Oracle server URL
-            const rawUrl = 'http://164.152.16.132/api/nowplaying/k-roo_radio';
-            
-            // 2. Wrap it in a proxy to bypass GitHub's HTTPS/Mixed-Content block
-            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(rawUrl)}`;
+            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(METADATA_URL)}`;
         
             try {
                 const res = await fetch(proxyUrl);
-                if (!res.ok) throw new Error('Network response was not ok');
-                
                 const data = await res.json();
-                
-                // If data exists, inject it and exit
-                if (data && data.now_playing) {
+                if (data?.now_playing) {
                     el.innerText = data.now_playing.song.text;
-                    console.log("Success! Currently Playing:", data.now_playing.song.text);
                     return;
                 }
             } catch (error) {
-                console.error("METADATA ERROR:", error);
-                // Fallback text if the Beast is unreachable
                 el.innerText = "K-ROO Auto-DJ Active";
             }
         }
 
-        async function fetchSchedule() {
-            const URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTlWcfl9lN1xjw2HXKrF3b2ssyT4gVpQqqARKmi-dmiaLUcaGlauc3CiXPH2We8pnsvM0S8p03sdiXI/pub?output=csv';
-            try {
-                const res = await fetch(URL);
-                const text = await res.text();
-                const rows = text.split('\n').map(r => r.split(',').map(c => c.replace(/"/g, '')));
-                const targetRows = rows.slice(5, 27);
-                let html = '<thead><tr>';
-                for (let j = 1; j <= 8; j++) html += `<th>${targetRows[0][j] || ""}</th>`;
-                html += '</tr></thead><tbody>';
-                for (let i = 1; i < targetRows.length; i++) {
-                    html += '<tr>';
-                    for (let j = 1; j <= 8; j++) {
-                        let data = targetRows[i][j] || "";
-                        if (j === 1) { 
-                            let h = (5 + i) % 12 || 12;
-                            let ap = (5 + i) >= 12 ? "PM" : "AM";
-                            data = `${h}:00 ${ap}`;
-                        }
-                        html += `<td>${data || "--"}</td>`;
-                    }
-                    html += '</tr>';
-                }
-                document.getElementById('schedule-table').innerHTML = html + '</tbody>';
-            } catch (e) { console.error("Schedule Error", e); }
-        }
-
+        // Initialize
         checkLiveStatus();
-        fetchSchedule();
         updateMetadata();
         setInterval(updateMetadata, 10000);
     </script>
