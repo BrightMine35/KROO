@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule & About | K-ROO Radio</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="favicon.PNG">
+    <style>
+        /* Shared Tab/Nav Styling */
+        .tab-container { display: flex; justify-content: center; background: #0033A0; padding: 10px 0; position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid #FFDD00; }
+        .tab-link { color: white; padding: 12px 20px; text-decoration: none; font-weight: bold; transition: 0.3s; border-radius: 5px; margin: 0 5px; font-size: 0.9em; text-align: center; }
+        .tab-link:hover { background: rgba(255, 221, 0, 0.2); }
+        .tab-link.active { background: #FFDD00; color: #0033A0; }
+
+        /* Schedule Table Styling */
+        #schedule-container { width: 100%; overflow-x: auto; margin: 20px 0; border: 1px solid #ddd; border-radius: 8px; background: white; }
+        .schedule-table { width: 100%; border-collapse: collapse; min-width: 900px; table-layout: fixed; }
+        .schedule-table th, .schedule-table td { padding: 15px 10px; border: 1px solid #eee; text-align: left; vertical-align: top; font-size: 0.85em; }
+        .schedule-table th { background-color: #0033A0; color: white; text-transform: uppercase; text-align: center; }
+        .schedule-table td:first-child { font-weight: bold; color: #0033A0; background: #fcfcfc; width: 90px; text-align: center; }
+        
+        .show-label { color: #0033A0; border-left: 5px solid #FFDD00; padding-left: 15px; margin-bottom: 15px; text-transform: uppercase; font-size: 1.4em; }
+        .btn-group { text-align: center; margin-bottom: 30px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+    </style>
+</head>
+<body>
+
+    <header class="hero" style="background-image: url('rooradio.jpg'); background-size: cover; background-position: center; height: 20vh; display: flex; align-items: center; justify-content: center; color: white; text-align: center;">
+        <div style="background: rgba(0, 51, 160, 0.7); padding: 20px; width: 100%;">
+            <h1 style="font-size: 2.5em; color: #FFDD00; margin: 0;">ABOUT & SCHEDULE</h1>
+        </div>
+    </header>
+
+    <nav class="tab-container">
+        <a href="index.html" class="tab-link">K-ROO LIVE</a>
+        <a href="archives.html" class="tab-link">WIP / ARCHIVES</a>
+        <a href="about.html" class="tab-link active">ABOUT & SCHEDULE</a>
+        <a href="cafe.html" class="tab-link">THE CAFE</a>
+    </nav>
+
+    <main style="max-width: 1000px; margin: 0 auto; padding: 30px 20px;">
+        
+        <div class="btn-group">
+             <a href="team.html" class="tab-link" style="background: #0033A0; width: 200px;">MEET THE CREW</a>
+             <a href="reservations.html" class="tab-link" style="background: #cc0000; width: 200px;">ROOM RESERVATIONS</a>
+        </div>
+
+        <h2 class="show-label">Weekly Show Schedule</h2>
+        <p style="margin-bottom: 20px; color: #666; font-style: italic;">Note: Times listed are for live broadcasts. For studio availability, please check the Reservations page.</p>
+
+        <div id="schedule-container">
+            <table class="schedule-table" id="schedule-table">
+                <thead><tr><th>Loading Schedule...</th></tr></thead>
+            </table>
+        </div>
+
+    </main>
+
+    <script>
+        async function fetchSchedule() {
+            // Your published Google Sheet CSV URL
+            const URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTlWcfl9lN1xjw2HXKrF3b2ssyT4gVpQqqARKmi-dmiaLUcaGlauc3CiXPH2We8pnsvM0S8p03sdiXI/pub?output=csv';
+            try {
+                const res = await fetch(URL);
+                const text = await res.text();
+                const rows = text.split('\n').map(r => r.split(',').map(c => c.replace(/"/g, '')));
+                const targetRows = rows.slice(5, 27);
+                
+                let html = '<thead><tr>';
+                // Grabbing days of the week from the sheet headers
+                for (let j = 1; j <= 8; j++) html += `<th>${targetRows[0][j] || ""}</th>`;
+                html += '</tr></thead><tbody>';
+
+                for (let i = 1; i < targetRows.length; i++) {
+                    html += '<tr>';
+                    for (let j = 1; j <= 8; j++) {
+                        let data = targetRows[i][j] || "";
+                        // Time formatting logic
+                        if (j === 1) { 
+                            let h = (5 + i) % 12 || 12;
+                            let ap = (5 + i) >= 12 ? "PM" : "AM";
+                            data = `${h}:00 ${ap}`;
+                        }
+                        html += `<td>${data || "--"}</td>`;
+                    }
+                    html += '</tr>';
+                }
+                document.getElementById('schedule-table').innerHTML = html + '</tbody>';
+            } catch (e) { 
+                console.error("Schedule Error", e);
+                document.getElementById('schedule-table').innerHTML = "<thead><tr><th>Failed to load schedule. Please try again later.</th></tr></thead>";
+            }
+        }
+
+        fetchSchedule();
+    </script>
+</body>
+</html>
