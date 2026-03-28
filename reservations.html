@@ -3,78 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Room Reservations | K-ROO Radio</title>
+    <title>Reservations | K-ROO Radio</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="favicon.PNG">
     <style>
-        body { font-family: sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
-        header { background: #0033A0; color: white; padding: 30px; text-align: center; }
-        .container { max-width: 1000px; margin: 20px auto; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .disclaimer { background: #fff3cd; border-left: 5px solid #ffc107; padding: 15px; margin-bottom: 20px; color: #856404; font-weight: bold; }
-        .btn-reserve { display: block; width: fit-content; margin: 20px auto; padding: 15px 30px; background: #FFDD00; color: #0033A0; text-decoration: none; font-weight: bold; border-radius: 5px; text-align: center; font-size: 1.2em; transition: transform 0.2s; }
-        .btn-reserve:hover { transform: scale(1.05); }
+        .tab-container { display: flex; justify-content: center; background: #0033A0; padding: 10px 0; position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid #FFDD00; }
+        .tab-link { color: white; padding: 12px 20px; text-decoration: none; font-weight: bold; transition: 0.3s; border-radius: 5px; margin: 0 5px; font-size: 0.9em; }
+        .tab-link:hover { background: rgba(255, 221, 0, 0.2); }
+        .tab-link.active { background: #FFDD00; color: #0033A0; }
+
+        .section-box { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 40px; }
+        .show-label { color: #0033A0; border-left: 5px solid #FFDD00; padding-left: 15px; margin-bottom: 15px; text-transform: uppercase; font-size: 1.4em; }
         
-        #res-container { width: 100%; overflow-x: auto; }
-        .schedule-table { width: 100%; border-collapse: collapse; min-width: 800px; }
-        .schedule-table th, .schedule-table td { padding: 12px; border: 1px solid #ddd; text-align: center; font-size: 0.9em; }
-        .schedule-table th { background: #0033A0; color: white; }
+        .disclaimer { background: #fff3f3; border: 1px solid #cc0000; color: #cc0000; padding: 20px; border-radius: 8px; margin-bottom: 30px; font-weight: bold; text-align: center; }
+
+        .schedule-container { width: 100%; overflow-x: auto; margin: 20px 0; border: 1px solid #ddd; border-radius: 8px; }
+        .schedule-table { width: 100%; border-collapse: collapse; min-width: 900px; table-layout: fixed; }
+        .schedule-table th, .schedule-table td { padding: 12px 8px; border: 1px solid #eee; text-align: left; vertical-align: top; font-size: 0.8em; }
+        .schedule-table th { background-color: #0033A0; color: white; text-align: center; }
+        .schedule-table td:first-child { font-weight: bold; color: #0033A0; background: #fcfcfc; width: 85px; text-align: center; }
     </style>
 </head>
 <body>
 
-<header>
-    <h1>ROOM RESERVATIONS</h1>
-    <a href="index.html" style="color:white; text-decoration:none;">← Back to Home</a>
-</header>
+    <header class="hero" style="background-image: url('rooradio.jpg'); background-size: cover; background-position: center; height: 20vh; display: flex; align-items: center; justify-content: center; color: white; text-align: center;">
+        <div style="background: rgba(204, 0, 0, 0.8); padding: 20px; width: 100%;">
+            <h1 style="font-size: 2.5em; color: white; margin: 0;">STUDIO RESERVATIONS</h1>
+        </div>
+    </header>
 
-<div class="container">
-    <div class="disclaimer">
-        These are office hours and room reservations, not showtimes. To reserve the radio room, click the button below to see available hours and submit a "Suggestion" on the spreadsheet.
-    </div>
+    <nav class="tab-container">
+        <a href="index.html" class="tab-link">K-ROO LIVE</a>
+        <a href="archives.html" class="tab-link">WIP / ARCHIVES</a>
+        <a href="about.html" class="tab-link">ABOUT & SCHEDULE</a>
+        <a href="reservations.html" class="tab-link active">RESERVATIONS</a>
+    </nav>
 
-    <a href="YOUR_EDITABLE_SHEET_LINK_HERE" target="_blank" class="btn-reserve">APPLY FOR ROOM TIME</a>
+    <main style="max-width: 1100px; margin: 0 auto; padding: 40px 20px;">
 
-    <div id="res-container">
-        <table class="schedule-table" id="res-table">
-            <thead><tr><th>Fetching Availability...</th></tr></thead>
-        </table>
-    </div>
-</div>
+        <div class="disclaimer">
+            ⚠️ NOTICE: These are studio reservations and office hours only. 
+            <br>Broadcast showtimes are listed on the main Schedule page. 
+            <br>To apply for a time slot, please contact the Station Manager.
+        </div>
 
-<script>
-    async function fetchReservations() {
-        // Use your published CSV link here. 
-        // TIP: If the reservations are on a different TAB, change gid=0 to the specific tab ID
-        const URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTlWcfl9lN1xjw2HXKrF3b2ssyT4gVpQqqARKmi-dmiaLUcaGlauc3CiXPH2We8pnsvM0S8p03sdiXI/pub?output=csv';
+        <section class="section-box">
+            <h2 class="show-label">Studio Availability / Office Hours</h2>
+            <div class="schedule-container">
+                <table class="schedule-table" id="office-table">
+                    <thead><tr><th>Loading Office Hours...</th></tr></thead>
+                </table>
+            </div>
+        </section>
+
+        <section class="section-box" style="opacity: 0.7;">
+            <h2 class="show-label">Reference: Broadcast Showtimes</h2>
+            <div class="schedule-container">
+                <table class="schedule-table" id="show-table">
+                    <thead><tr><th>Loading Showtimes...</th></tr></thead>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        const BASE_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTlWcfl9lN1xjw2HXKrF3b2ssyT4gVpQqqARKmi-dmiaLUcaGlauc3CiXPH2We8pnsvM0S8p03sdiXI/pub?output=csv';
         
-        try {
-            const res = await fetch(URL);
-            const text = await res.text();
-            const rows = text.split('\n').map(r => r.split(',').map(c => c.replace(/"/g, '')));
-            
-            // Adjust slice() based on where your reservation grid starts in the sheet
-            const targetRows = rows.slice(5, 27); 
-            let html = '<thead><tr>';
-            for (let j = 1; j <= 8; j++) html += `<th>${targetRows[0][j] || ""}</th>`;
-            html += '</tr></thead><tbody>';
+        // REPLACE THIS GID with the one for your "Office Hours" tab
+        const OFFICE_HOURS_GID = '0'; 
 
-            for (let i = 1; i < targetRows.length; i++) {
-                html += '<tr>';
-                for (let j = 1; j <= 8; j++) {
-                    let data = targetRows[i][j] || "";
-                    if (j === 1) { 
-                        let h = (5 + i) % 12 || 12;
-                        let ap = (5 + i) >= 12 ? "PM" : "AM";
-                        data = `${h}:00 ${ap}`;
+        async function loadTable(tableId, gid) {
+            const url = `${BASE_URL}${gid !== '0' ? '&gid=' + gid : ''}`;
+            try {
+                const res = await fetch(url);
+                const text = await res.text();
+                const rows = text.split('\n').map(r => r.split(',').map(c => c.replace(/"/g, '')));
+                const targetRows = rows.slice(5, 27);
+                
+                let html = '<thead><tr>';
+                for (let j = 1; j <= 8; j++) html += `<th>${targetRows[0][j] || ""}</th>`;
+                html += '</tr></thead><tbody>';
+
+                for (let i = 1; i < targetRows.length; i++) {
+                    html += '<tr>';
+                    for (let j = 1; j <= 8; j++) {
+                        let data = targetRows[i][j] || "";
+                        if (j === 1) { 
+                            let h = (5 + i) % 12 || 12;
+                            let ap = (5 + i) >= 12 ? "PM" : "AM";
+                            data = `${h}:00 ${ap}`;
+                        }
+                        html += `<td>${data || "--"}</td>`;
                     }
-                    html += `<td>${data || "--"}</td>`;
+                    html += '</tr>';
                 }
-                html += '</tr>';
-            }
-            document.getElementById('res-table').innerHTML = html + '</tbody>';
-        } catch (e) { console.error("Reservation Fetch Error", e); }
-    }
-    fetchReservations();
-</script>
+                document.getElementById(tableId).innerHTML = html + '</tbody>';
+            } catch (e) { console.error("Error loading table", e); }
+        }
 
+        // Load both tables on startup
+        loadTable('office-table', OFFICE_HOURS_GID);
+        loadTable('show-table', '0'); // Assuming GID 0 is your main showtimes
+    </script>
 </body>
 </html>
