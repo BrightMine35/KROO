@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archives | K-ROO Radio</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="favicon.PNG">
+    <style>
+        /* Shared Tab/Nav Styling */
+        .tab-container { display: flex; justify-content: center; background: #0033A0; padding: 10px 0; position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid #FFDD00; }
+        .tab-link { color: white; padding: 12px 20px; text-decoration: none; font-weight: bold; transition: 0.3s; border-radius: 5px; margin: 0 5px; font-size: 0.9em; }
+        .tab-link:hover { background: rgba(255, 221, 0, 0.2); }
+        .tab-link.active { background: #FFDD00; color: #0033A0; }
+
+        /* Content Styling */
+        .show-section { margin-bottom: 50px; padding: 20px; }
+        .show-label { color: #0033A0; border-left: 5px solid #FFDD00; padding-left: 15px; margin-bottom: 15px; text-transform: uppercase; font-size: 1.4em; }
+        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); background: #000; }
+        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+    </style>
+</head>
+<body>
+
+    <header class="hero" style="background-image: url('rooradio.jpg'); background-size: cover; background-position: center; height: 20vh; display: flex; align-items: center; justify-content: center; color: white; text-align: center;">
+        <div style="background: rgba(0, 51, 160, 0.7); padding: 20px; width: 100%;">
+            <h1 style="font-size: 2.5em; color: #FFDD00; margin: 0;">K-ROO ARCHIVES</h1>
+        </div>
+    </header>
+
+    <nav class="tab-container">
+        <a href="index.html" class="tab-link">K-ROO LIVE</a>
+        <a href="archives.html" class="tab-link active">WIP / ARCHIVES</a>
+        <a href="about.html" class="tab-link">ABOUT & SCHEDULE</a>
+        <a href="cafe.html" class="tab-link">THE CAFE</a>
+    </nav>
+
+    <main style="max-width: 1000px; margin: 0 auto; padding-top: 30px;">
+        
+        <div class="show-section">
+            <h2 class="show-label">Slated Podcasts</h2>
+            <div class="video-wrapper">
+                <iframe src="https://www.youtube.com/embed/videoseries?list=PL6iSD_biiywPQKJ6-AS8adaXZsSymCl2v&mute=1" loading="lazy" frameborder="0" allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <div class="show-section">
+            <h2 class="show-label">Auto-DJ Playlist 1 / Tweaker Tunes</h2>
+            <div class="video-wrapper">
+                <iframe src="https://www.youtube.com/embed/videoseries?list=PL6iSD_biiywNa-PFdaHwVGfuMVl70z_bU&mute=1" loading="lazy" frameborder="0" allowfullscreen></iframe>
+            </div>
+        </div>
+
+    </main>
+
+</body>
+</html>
