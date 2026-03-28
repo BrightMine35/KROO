@@ -3,28 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K-ROO Radio | The Voice of UMKC</title>
+    <title>K-ROO Radio | Live</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="favicon.PNG">
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
-        /* Modern Navigation */
         .tab-container { display: flex; justify-content: center; background: #0033A0; padding: 10px 0; position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid #FFDD00; }
         .tab-link { color: white; padding: 12px 20px; text-decoration: none; font-weight: bold; transition: 0.3s; border-radius: 5px; margin: 0 5px; font-size: 0.9em; }
         .tab-link:hover { background: rgba(255, 221, 0, 0.2); }
         .tab-link.active { background: #FFDD00; color: #0033A0; }
 
-        /* Live Content Styling */
-        .show-label { color: #0033A0; border-left: 5px solid #FFDD00; padding-left: 15px; margin-bottom: 15px; text-transform: uppercase; font-size: 1.4em; }
-        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); background: #000; }
+        .player-box { margin-bottom: 25px; padding: 25px; background: #0033A0; border-radius: 15px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .track-info-container { margin-bottom: 15px; font-family: monospace; font-size: 1.1em; color: #FFDD00; }
+        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; background: #000; }
         .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
     </style>
 </head>
 <body>
 
-    <header class="hero" style="background-image: url('rooradio.jpg'); background-size: cover; background-position: center; height: 30vh; display: flex; align-items: center; justify-content: center; color: white; text-align: center;">
-        <div style="background: rgba(0, 51, 160, 0.7); padding: 30px; width: 100%;">
-            <h1 style="font-size: 3.5em; color: #FFDD00; margin: 0;">K-ROO</h1>
-            <p style="font-size: 1.2em; letter-spacing: 2px;">THE VOICE OF UMKC</p>
+    <header class="hero" style="background-image: url('rooradio.jpg'); background-size: cover; background-position: center; height: 25vh; display: flex; align-items: center; justify-content: center; color: white; text-align: center;">
+        <div style="background: rgba(0, 51, 160, 0.7); padding: 20px; width: 100%;">
+            <h1 style="font-size: 3em; color: #FFDD00; margin: 0;">K-ROO LIVE</h1>
         </div>
     </header>
 
@@ -38,16 +37,14 @@
 
     <main style="max-width: 1000px; margin: 0 auto; padding: 30px 20px;">
 
-        <section style="margin-bottom: 25px; padding: 25px; background: #0033A0; border-radius: 15px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-            <div style="margin-bottom: 15px; font-family: monospace; font-size: 1.1em; color: #FFDD00;">
-                <strong style="color: white;">[NOW PLAYING]:</strong> <span id="track-info">Connecting to Cloud Station...</span>
+        <section class="player-box">
+            <div class="track-info-container">
+                <strong style="color: white;">[ON AIR]:</strong> <span id="track-info">Syncing...</span>
             </div>
-            <audio controls style="width: 100%; border-radius: 8px;">
-                <source src="http://164.152.16.132/listen/k-roo_radio/live" type="audio/mpeg">
-            </audio>
+            <audio id="audio" controls style="width: 100%; border-radius: 8px;"></audio>
         </section>
 
-        <h2 class="show-label" style="border-left-color: #cc0000;">Visual Broadcast</h2>
+        <h2 style="color: #0033A0; border-left: 5px solid #cc0000; padding-left: 15px; margin-bottom: 15px;">VISUAL FEED</h2>
         <div class="video-wrapper">
             <iframe id="live-player" src="" frameborder="0" allowfullscreen></iframe>
         </div>
@@ -55,51 +52,52 @@
     </main>
 
     <script>
-        // --- CONFIG ---
+        // --- HLS LOGIC ---
+        const streamUrl = 'http://164.152.16.132/live/k-roo_radio/index.m3u8';
+        const audio = document.getElementById('audio');
+
+        if (Hls.isSupported()) {
+            const hls = new Hls();
+            hls.loadSource(streamUrl);
+            hls.attachMedia(audio);
+            hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                console.log("HLS Manifest loaded successfully");
+            });
+        } 
+        // For Safari/iOS which supports HLS natively
+        else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+            audio.src = streamUrl;
+        }
+
+        // --- METADATA & YOUTUBE (Existing) ---
         const CHANNEL_ID = 'UCWx5sR1VIkTLJ3BI3ZvQibQ';
         const API_KEY = 'AIzaSyDOH6T3RmKWb3MmTFZl21d-NPjvkpKp680';
         const PLAYLIST_ID = 'PL1FttfnMOMng-aI9SzkpxDvhTsgovPFAD';
-        const METADATA_URL = 'http://164.152.16.132/api/nowplaying/k-roo_radio';
 
-        // --- YOUTUBE LIVE CHECK ---
-        async function checkLiveStatus() {
-            const player = document.getElementById('live-player');
-            const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&type=video&eventType=live&key=${API_KEY}`;
-
-            try {
-                const res = await fetch(url);
-                const data = await res.json();
-                if (data.items && data.items.length > 0) {
-                    const videoId = data.items[0].id.videoId;
-                    player.src = `https://www.youtube.com/embed/${videoId}?autoplay=0&mute=1`;
-                } else {
-                    player.src = `https://www.youtube.com/embed/videoseries?list=${PLAYLIST_ID}&mute=1`;
-                }
-            } catch (e) {
-                player.src = `https://www.youtube.com/embed/videoseries?list=${PLAYLIST_ID}&mute=1`;
-            }
-        }
-
-        // --- METADATA UPDATE ---
         async function updateMetadata() {
             const el = document.getElementById('track-info');
-            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(METADATA_URL)}`;
-        
+            const rawUrl = 'http://164.152.16.132/api/nowplaying/k-roo_radio';
+            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(rawUrl)}`;
             try {
                 const res = await fetch(proxyUrl);
                 const data = await res.json();
-                if (data?.now_playing) {
-                    el.innerText = data.now_playing.song.text;
-                    return;
-                }
-            } catch (error) {
-                el.innerText = "K-ROO Auto-DJ Active";
-            }
+                if (data?.now_playing) el.innerText = data.now_playing.song.text;
+            } catch (e) { el.innerText = "K-ROO LIVE"; }
         }
 
-        // Initialize
-        checkLiveStatus();
+        async function checkLiveStatus() {
+            const player = document.getElementById('live-player');
+            const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&type=video&eventType=live&key=${API_KEY}`;
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+                const videoId = data.items?.[0]?.id?.videoId || null;
+                player.src = videoId ? `https://www.youtube.com/embed/${videoId}?mute=1` : `https://www.youtube.com/embed/videoseries?list=${PLAYLIST_ID}&mute=1`;
+            } catch (e) { player.src = `https://www.youtube.com/embed/videoseries?list=${PLAYLIST_ID}&mute=1`; }
+        }
+
         updateMetadata();
+        checkLiveStatus();
         setInterval(updateMetadata, 10000);
     </script>
 </body>
