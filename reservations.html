@@ -7,16 +7,25 @@
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="favicon.PNG">
     <style>
+        /* Existing K-ROO Styles */
         .tab-container { display: flex; justify-content: center; background: #0033A0; padding: 10px 0; position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid #FFDD00; }
         .tab-link { color: white; padding: 12px 20px; text-decoration: none; font-weight: bold; transition: 0.3s; border-radius: 5px; margin: 0 5px; font-size: 0.9em; }
         .tab-link:hover { background: rgba(255, 221, 0, 0.2); }
         .tab-link.active { background: #FFDD00; color: #0033A0; }
-
         .section-box { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 40px; }
         .show-label { color: #0033A0; border-left: 5px solid #FFDD00; padding-left: 15px; margin-bottom: 15px; text-transform: uppercase; font-size: 1.4em; }
-        
-        .disclaimer { background: #fff3f3; border: 1px solid #cc0000; color: #cc0000; padding: 20px; border-radius: 8px; margin-bottom: 30px; font-weight: bold; text-align: center; }
 
+        /* The Red Reservations Button */
+        .reserve-btn { 
+            display: block; width: fit-content; margin: 0 auto 30px auto; 
+            background: #cc0000; color: white; padding: 20px 40px; 
+            text-decoration: none; font-weight: bold; font-size: 1.3em; 
+            border-radius: 50px; box-shadow: 0 4px 15px rgba(204, 0, 0, 0.3); 
+            transition: 0.3s; text-align: center; 
+        }
+        .reserve-btn:hover { background: #ff0000; transform: scale(1.05); }
+
+        /* Table Formatting (Preserved) */
         .schedule-container { width: 100%; overflow-x: auto; margin: 20px 0; border: 1px solid #ddd; border-radius: 8px; }
         .schedule-table { width: 100%; border-collapse: collapse; min-width: 900px; table-layout: fixed; }
         .schedule-table th, .schedule-table td { padding: 12px 8px; border: 1px solid #eee; text-align: left; vertical-align: top; font-size: 0.8em; }
@@ -27,8 +36,8 @@
 <body>
 
     <header class="hero" style="background-image: url('rooradio.jpg'); background-size: cover; background-position: center; height: 20vh; display: flex; align-items: center; justify-content: center; color: white; text-align: center;">
-        <div style="background: rgba(204, 0, 0, 0.8); padding: 20px; width: 100%;">
-            <h1 style="font-size: 2.5em; color: white; margin: 0;">STUDIO RESERVATIONS</h1>
+        <div style="background: rgba(0, 51, 160, 0.8); padding: 20px; width: 100%;">
+            <h1 style="font-size: 2.5em; color: #FFDD00; margin: 0;">STUDIO RESERVATIONS</h1>
         </div>
     </header>
 
@@ -41,26 +50,20 @@
 
     <main style="max-width: 1100px; margin: 0 auto; padding: 40px 20px;">
 
-        <div class="disclaimer">
-            ⚠️ NOTICE: These are studio reservations and office hours only. 
-            <br>Broadcast showtimes are listed on the main Schedule page. 
-            <br>To apply for a time slot, please contact the Station Manager.
+        <a href="https://docs.google.com/spreadsheets/d/1Fs6YoPuoSxCUaGxooiOx9hjgrdMoY1hDhHVbXRLu_xQ/edit?usp=sharing" target="_blank" class="reserve-btn">
+            ➕ REQUEST A TIME SLOT
+        </a>
+
+        <div style="background: #fcfcfc; border: 1px solid #eee; padding: 15px; border-radius: 8px; margin-bottom: 30px; text-align: center; font-size: 0.9em; color: #555;">
+            <strong>STUDIO BOOKING:</strong> Click the button above to view the live sheet. 
+            Leave a <u>Comment</u> on your desired time with your Name/Show.
         </div>
 
         <section class="section-box">
-            <h2 class="show-label">Studio Availability / Office Hours</h2>
+            <h2 class="show-label">Live Weekly Schedule</h2>
             <div class="schedule-container">
-                <table class="schedule-table" id="office-table">
-                    <thead><tr><th>Loading Office Hours...</th></tr></thead>
-                </table>
-            </div>
-        </section>
-
-        <section class="section-box" style="opacity: 0.7;">
-            <h2 class="show-label">Reference: Broadcast Showtimes</h2>
-            <div class="schedule-container">
-                <table class="schedule-table" id="show-table">
-                    <thead><tr><th>Loading Showtimes...</th></tr></thead>
+                <table class="schedule-table" id="master-table">
+                    <thead><tr><th>Loading Schedule...</th></tr></thead>
                 </table>
             </div>
         </section>
@@ -68,27 +71,31 @@
     </main>
 
     <script>
+        // Your specific tweaked URL and GID
         const BASE_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTlWcfl9lN1xjw2HXKrF3b2ssyT4gVpQqqARKmi-dmiaLUcaGlauc3CiXPH2We8pnsvM0S8p03sdiXI/pub?output=csv';
-        
-        // REPLACE THIS GID with the one for your "Office Hours" tab
-        const OFFICE_HOURS_GID = '0'; 
+        const GID = '0'; 
 
-        async function loadTable(tableId, gid) {
-            const url = `${BASE_URL}${gid !== '0' ? '&gid=' + gid : ''}`;
+        async function loadTable() {
             try {
-                const res = await fetch(url);
+                const res = await fetch(`${BASE_URL}&gid=${GID}`);
                 const text = await res.text();
+                
+                // PRESERVING YOUR EXACT PARSING LOGIC
                 const rows = text.split('\n').map(r => r.split(',').map(c => c.replace(/"/g, '')));
                 const targetRows = rows.slice(5, 27);
                 
                 let html = '<thead><tr>';
-                for (let j = 1; j <= 8; j++) html += `<th>${targetRows[0][j] || ""}</th>`;
+                for (let j = 1; j <= 8; j++) {
+                    html += `<th>${targetRows[0][j] || ""}</th>`;
+                }
                 html += '</tr></thead><tbody>';
 
                 for (let i = 1; i < targetRows.length; i++) {
                     html += '<tr>';
                     for (let j = 1; j <= 8; j++) {
                         let data = targetRows[i][j] || "";
+                        
+                        // Preserving your auto-time column logic
                         if (j === 1) { 
                             let h = (5 + i) % 12 || 12;
                             let ap = (5 + i) >= 12 ? "PM" : "AM";
@@ -98,13 +105,13 @@
                     }
                     html += '</tr>';
                 }
-                document.getElementById(tableId).innerHTML = html + '</tbody>';
-            } catch (e) { console.error("Error loading table", e); }
+                document.getElementById('master-table').innerHTML = html + '</tbody>';
+            } catch (e) { 
+                console.error("Error loading table", e); 
+            }
         }
 
-        // Load both tables on startup
-        loadTable('office-table', OFFICE_HOURS_GID);
-        loadTable('show-table', '0'); // Assuming GID 0 is your main showtimes
+        loadTable();
     </script>
 </body>
 </html>
