@@ -71,13 +71,12 @@
     </main>
 
     <script>
-        // Your specific tweaked URL and GID
-        const BASE_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTlWcfl9lN1xjw2HXKrF3b2ssyT4gVpQqqARKmi-dmiaLUcaGlauc3CiXPH2We8pnsvM0S8p03sdiXI/pub?output=csv';
-        const GID = '0'; 
+        // Exact same URL as about.html to ensure compliance
+        const URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTlWcfl9lN1xjw2HXKrF3b2ssyT4gVpQqqARKmi-dmiaLUcaGlauc3CiXPH2We8pnsvM0S8p03sdiXI/pub?output=csv';
 
         async function loadTable() {
             try {
-                const res = await fetch(`${BASE_URL}&gid=${GID}`);
+                const res = await fetch(URL);
                 const text = await res.text();
                 
                 // PRESERVING YOUR EXACT PARSING LOGIC
@@ -108,9 +107,11 @@
                 document.getElementById('master-table').innerHTML = html + '</tbody>';
             } catch (e) { 
                 console.error("Error loading table", e); 
+                document.getElementById('master-table').innerHTML = "<thead><tr><th>Error loading schedule. Please use the button above.</th></tr></thead>";
             }
         }
 
+        // Run the function
         loadTable();
     </script>
 </body>
