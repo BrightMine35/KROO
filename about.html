@@ -43,6 +43,7 @@
         
         <div class="btn-group">
              <a href="team.html" class="tab-link" style="background: #0033A0; width: 200px;">MEET THE CREW</a>
+             <a href="https://roogroups.umkc.edu/feeds?type=club&type_id=35601&tab=about" target="_blank" class="tab-link" style="background: #0033A0; width: 200px;">ROOGROUPS</a>
              <a href="reservations.html" class="tab-link" style="background: #cc0000; width: 200px;">ROOM RESERVATIONS</a>
         </div>
 
@@ -59,16 +60,15 @@
 
     <script>
         async function fetchSchedule() {
-            // Your published Google Sheet CSV URL
             const URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTlWcfl9lN1xjw2HXKrF3b2ssyT4gVpQqqARKmi-dmiaLUcaGlauc3CiXPH2We8pnsvM0S8p03sdiXI/pub?output=csv';
             try {
                 const res = await fetch(URL);
                 const text = await res.text();
+                // Preserving your exact parsing logic
                 const rows = text.split('\n').map(r => r.split(',').map(c => c.replace(/"/g, '')));
                 const targetRows = rows.slice(5, 27);
                 
                 let html = '<thead><tr>';
-                // Grabbing days of the week from the sheet headers
                 for (let j = 1; j <= 8; j++) html += `<th>${targetRows[0][j] || ""}</th>`;
                 html += '</tr></thead><tbody>';
 
@@ -76,7 +76,6 @@
                     html += '<tr>';
                     for (let j = 1; j <= 8; j++) {
                         let data = targetRows[i][j] || "";
-                        // Time formatting logic
                         if (j === 1) { 
                             let h = (5 + i) % 12 || 12;
                             let ap = (5 + i) >= 12 ? "PM" : "AM";
